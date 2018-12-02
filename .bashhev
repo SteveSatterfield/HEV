@@ -52,6 +52,12 @@ function hevb {
      source $HEVROOT/profile $1 iris
 }
 
+function hevf {
+     unset DTK_SHAREDMEM_DIR;
+     export HEVROOT=$HOME/HEVf
+     source $HEVROOT/profile $1 iris
+}
+
 function hevhere {
       unset DTK_SHAREDMEM_DIR;
       export HEVROOT=$(pwd)

@@ -14,7 +14,7 @@ We have developed this software only on CentOS 7 and NVIDIA GPUs.
 Additional packages:
 
 - centos-release-scl
-- python33
+- python3
 - cmake
 - fltk-\*
 - mesa-\*
@@ -23,7 +23,6 @@ Additional packages:
 - libsndfile-devel
 - portaudio-devel
 - tk-devel
-- epel-release
 - R
 - GraphicsMagick
 - ImageMagick

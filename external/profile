@@ -100,7 +100,6 @@ fi
 
 # Python3
 hev_external_python3=${hev_external}/python3
-source scl_source enable python33
 if [ -d $hev_external_python3 ] ; then
     export PATH=`hev_append_path "$PATH" ${hev_external_python3}/installed/bin ":"`
     export PYTHONPATH=`hev_append_path "$PYTHONPATH" ${hev_external_python3}/installed/lib/python3.3/site-packages ":"`
