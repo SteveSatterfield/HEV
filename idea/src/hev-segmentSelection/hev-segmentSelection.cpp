@@ -871,7 +871,7 @@ setupSigHandlers ()
 	signal (SIGIO, sigHandler);
 	signal (SIGPWR, sigHandler);
 	signal (SIGSYS, sigHandler);
-	signal (SIGUNUSED, sigHandler);
+	//sgs 12/3/2018	signal (SIGUNUSED, sigHandler);
 
 	}  // end of setupSigHandlers
 

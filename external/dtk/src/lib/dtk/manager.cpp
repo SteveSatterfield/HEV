@@ -306,9 +306,18 @@ void dtkManager::print(FILE *file) const
 	fprintf(file,"Augment ");
       else
 	fprintf(file,"Display ");
+
+      /*{sgs 12/02/2018
       fprintf(file,"%s%p%s %p %s%s%s:\n   %s\n\n",
 	      dtkMsg.color.tur, a,  dtkMsg.color.end,
 	      (void *) a->getType(),
+	      dtkMsg.color.grn, a->getName(), dtkMsg.color.end,
+	      a->getDescription());
+      }*/
+      
+      fprintf(file,"%s%p%s %p %s%s%s:\n   %s\n\n",
+	      dtkMsg.color.tur, a,  dtkMsg.color.end,
+	      a->getType(),
 	      dtkMsg.color.grn, a->getName(), dtkMsg.color.end,
 	      a->getDescription());
     }

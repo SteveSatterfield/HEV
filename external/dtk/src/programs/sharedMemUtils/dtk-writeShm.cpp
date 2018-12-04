@@ -17,11 +17,11 @@
 #include <string>
 #include <vector>
 
-#define PROGRAM_NAME "dtk-writeShm"
+#define  PROGRAM_NAME  "dtk-writeShm"
 
 static int Usage(char *name) {
   fprintf(stdout,
-	 " Usage: "PROGRAM_NAME" SHM_FILE SIZE NUM FORMAT [data]\n\n"
+	 " Usage: " PROGRAM_NAME " SHM_FILE SIZE NUM FORMAT [data]\n\n"
 	 "  Write data to the DTK shared memory file named SHM_FILE\n"
 	 "  whose size is SIZE bytes.\n"
 	 "  SIZE can be give as \"-\" if the shared memory segment\n"
@@ -139,7 +139,8 @@ int main(int argc, char **argv) {
     }
   } else {      // read from stdin
     std::string line ;
-    while (getline(std::cin, line)>0) {
+    //    while (getline(std::cin, line)>0) {  //sgs 4/27/18
+    while (getline(std::cin, line)) {
       std::vector<std::string> vec;
       tokenize( line, vec, " \t" );
       if (vec.size()%num != 0) {

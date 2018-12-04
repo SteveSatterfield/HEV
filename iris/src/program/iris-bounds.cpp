@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     if (argc<2)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     // send messages to stderr
@@ -46,20 +46,20 @@ int main(int argc, char** argv)
 	else if (iris::IsSubstring("--help",args[i],4))
 	{
 	    usage() ;
-	    return 0 ;
+	    exit(0);
 	}
 	else
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-bounds: unknown option \"%s\"\n",args[i]) ;
 	    usage() ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
     if (args.argc()<2)
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-bounds: not enough file names\"%s\"\n",args[i]) ;
-	return 1 ;
+	exit(1);
     }
 
     osg::ref_ptr<osg::Group> group = new osg::Group ;
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 	if (!child) 
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-bounds: can't load model file \"%s\"\n",args[1]) ;
-	    return 1 ;
+	    exit(1);
 	}
 	group->addChild(child) ;
 	args.remove(1) ;
@@ -87,5 +87,5 @@ int main(int argc, char** argv)
     if (box) printf("box_min:    %+8.8f %+8.8f %+8.8f\nbox_max:    %+8.8f %+8.8f %+8.8f\nbox_extent: %+8.8f %+8.8f %+8.8f\n",bb.xMin(), bb.yMin(), bb.zMin(), bb.xMax(), bb.yMax(), bb.zMax(), bb.xMax()-bb.xMin(), bb.yMax()-bb.yMin(), bb.zMax()-bb.zMin()) ;
     if (box) printf("box_center: %+8.8f %+8.8f %+8.8f\n",(bb.xMax()+bb.xMin())/2.f, (bb.yMax()+bb.yMin())/2.f, (bb.zMax()+bb.zMin())/2.f) ;
     
-    return 0 ;
+    exit(0);
 }

@@ -49,6 +49,8 @@ namespace iris
 	}
 	irisTime = t ;
 	if (getenv("IRIS_SLEEP")) unsetenv("IRIS_SLEEP") ;
+
+	return true;   // sgs
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -74,6 +76,7 @@ namespace iris
     unsigned long GetUsleep()
     {
 	unsigned long us = static_cast<unsigned long>(GetSleep()*1000000.0) ;
+	return us;   // sgs
     }
 
     ////////////////////////////////////////////////////////////////////////

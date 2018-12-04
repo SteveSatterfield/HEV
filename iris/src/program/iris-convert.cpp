@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     if (argc<3)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
     // send messages to stderr
     dtkMsg.setFile(stderr) ;
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 	if (iris::IsSubstring("--help",args[i],4))
 	{
 	    usage() ;
-	    return 0 ;
+	    exit(0);
 	}
 	else if (iris::IsSubstring("--normals",args[i],4))
 	{
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-convert: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 	else if (iris::IsSubstring("--static",args[i],4))
@@ -102,20 +102,20 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-convert: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 	else
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-convert: unknown option \"%s\"\n",args[i]) ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
     if (args.argc()<2)
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-convert: not enough file names\n") ;
-	return 1 ;
+	exit(1);
     }
 
     osg::ref_ptr<osg::Group> group = new osg::Group ;
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
     if (!node.valid())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-convert: no model files loaded\n") ;
-	return 1 ;
+	exit(1);
     }
     
     if (normals)
@@ -180,5 +180,5 @@ int main(int argc, char** argv)
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-convert: Unable to write to file \"%s\"\n", args[1]) ;
     }
-    return 0 ;
+    exit(0);
 }

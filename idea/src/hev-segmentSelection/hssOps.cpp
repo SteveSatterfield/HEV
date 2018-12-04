@@ -1460,7 +1460,7 @@ trackInCoords ()
 	{
 // fprintf (stderr, "trackInCoords\n");
 
-	static float prevInCoords[6] = {HUGE, HUGE, HUGE, HUGE, HUGE, HUGE};
+	static float prevInCoords[6] = {HUGE_VALF, HUGE_VALF, HUGE_VALF, HUGE_VALF, HUGE_VALF, HUGE_VALF};
 
 	// get input coords
 	float inCoord[6];

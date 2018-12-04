@@ -46,7 +46,7 @@ getWindowByName (Display *dpy, Window parent, const char *windowName)
         {
         if (strcmp (qName, windowName) == 0)
             {
-            return parent;
+            return(parent);
             }
         }
 
@@ -71,7 +71,7 @@ getWindowByName (Display *dpy, Window parent, const char *windowName)
 
     if (children) XFree ((char *)children);
 
-    return(w);
+    exit(w);
     } // end of getWindowByName 
 
 
@@ -88,7 +88,7 @@ setWindowStateBelow (const char *displayName, const char *windowName)
         dtkMsg.add(DTKMSG_ERROR, 
             "iris-immersiveWindowBelow: cannot open X display %s.\n",
             displayName);
-        return 1;
+        exit(1);
         }
 
 
@@ -182,7 +182,7 @@ setWindowStateBelow (const char *displayName, const char *windowName)
 
     XCloseDisplay (dpy);
 
-    return 0;
+    exit(0);
     }  // end of setWindowStateBelow
 
 ////////////////////////////////////////////////////////////////////////
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
     if (argc != 2)
         {
         usage ();
-        return -1;
+        exit(-1);
         }
 
     // use an ArgumentParser object to manage the program arguments.
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
         }  // end of loop over panes
 
 
-    return 0 ;
+    exit(0);
 
 }  // end of main
 

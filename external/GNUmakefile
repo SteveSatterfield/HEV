@@ -1,6 +1,12 @@
+#{sgs 12/3/2018
+#SUBDIRS = \
+#		  dtk coin osg gle \
+#		  vtk teem python3 R node bulletphysics bulletphysics
+#}
+
 SUBDIRS = \
 		  dtk coin osg gle \
-		  vtk teem python3 R node bulletphysics bulletphysics
+		      teem python3 R node
 
 MAKETARGETS  = build install
 CLEANTARGETS = clean distclean

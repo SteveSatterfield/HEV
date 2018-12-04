@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     if (pl.size()==0)
     {
 	dtkMsg.add(DTKMSG_ERROR,"iris-immersivePaneBorders: no immersive pane found\n") ;
-	return 1 ;
+	exit(1);
     }
 
     printf("GROUP iris-immersivePaneBorders\nADDCHILD iris-immersivePaneBorders scene\n") ;
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     }
     fflush(stdout) ;
 
-    return 0 ;
+    exit(0);
 }
 
 

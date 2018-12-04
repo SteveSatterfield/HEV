@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <dtk.h>
 #include <unistd.h>
 #include <signal.h>
 
@@ -621,7 +622,7 @@ getInputs (
 	   unsigned char & rButton)
 {
     static double LastCoord[9] = 
-	{HUGE, HUGE, HUGE, HUGE, HUGE, HUGE, HUGE, HUGE, HUGE};
+      {HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL, HUGE_VAL};
     static unsigned char LastRT = -1;
     static unsigned char LastT  = -1;
     static unsigned char LastR  = -1;

@@ -4,5 +4,5 @@ int main()
 {
 
   printf("%d\n",iris::GetUsleep()) ;
-  return 0 ;
+  exit(0);
 }

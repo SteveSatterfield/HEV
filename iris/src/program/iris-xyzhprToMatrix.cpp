@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     if (argc<3 || argc>5)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     int ticks = iris::GetUsleep() ;
@@ -62,14 +62,14 @@ int main(int argc, char **argv)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-xyzhprToMatrix: invalid usleep value\n") ;
 		usage() ;
-		return 1 ; 
+		exit(1); 
 	    }
 	    c++ ;
 	}
 	else 
 	{
 	    usage() ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
@@ -80,14 +80,14 @@ int main(int argc, char **argv)
     if (xyzhprShm->isInvalid())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-xyzhprToMatrix: unable to open xyzhpr shared memory with size %d\n", 6*sizeof(float)) ;
-	return 1 ;
+	exit(1);
     }
     
     matrixShm = new dtkSharedMem(sizeof(double)*16,matrixShmName.c_str(),0) ;
     if (matrixShm->isInvalid())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-xyzhprToMatrix: unable to open matrix shared memory with size %d\n", 16*sizeof(double)) ;
-	return 1 ;
+	exit(1);
     }
 
     while (running)
@@ -96,5 +96,5 @@ int main(int argc, char **argv)
 	usleep(ticks) ;
     }
 
-    return 0 ;
+    exit(0);
 }

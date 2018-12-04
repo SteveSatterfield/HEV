@@ -26,12 +26,12 @@ int main(int argc, char** argv)
 	    if (i+3>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (!args.read(args[i],pos.x(),pos.y(),pos.z()))
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: invalid translation \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 	    if (i+3>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    float h, p, r ;
 	    if (args.read(args[i],h,p,r))
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: invalid euler \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 
@@ -59,12 +59,12 @@ int main(int argc, char** argv)
 	    if (i+4>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (!args.read(args[i],att.x(),att.y(),att.z(),att.w()))
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: invalid quat \"%s,%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3],args[i+4]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 		else
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid scale \"%s\"\n",args[i+1]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	    else // try for non-uniform scale
@@ -89,19 +89,19 @@ int main(int argc, char** argv)
 		if (i+3>=args.argc())
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: not enough parameters\n") ;
-		    return 1 ;
+		    exit(1);
 		}
 		if (!args.read(args[i],scale.x(),scale.y(),scale.z()))
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: invalid translation \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	}
 	else
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-DCStoMatrix: unknown option \"%s\"\n",args[i]) ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
@@ -116,5 +116,5 @@ int main(int argc, char** argv)
 	   mat(2,0),mat(2,1),mat(2,2),mat(2,3),
 	   mat(3,0),mat(3,1),mat(3,2),mat(3,3)) ;
 
-    return 0 ;
+    exit(0);
 }

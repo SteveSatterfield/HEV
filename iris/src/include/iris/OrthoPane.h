@@ -23,7 +23,19 @@ namespace iris
     {
     public:
 	OrthoPane(Window* window, const char* name = NULL) : Pane(window, name), _left(-1.f), _right(1.f), _bottom(-1.f), _top(1.f) {} ;
-	
+      //{sgs 12/3//2018
+        OrthoPane(bool addToList = true) : Pane(NULL,NULL)
+	{ 
+	    if (addToList) 
+	    {
+	      _paneList.push_back(this) ;
+	    }
+	} ;
+      //sgs}
+
+
+
+
 	virtual OrthoPane* asOrtho() { return this ; } ;
 
 	// calculates the projection and view matrices for an immersive pane

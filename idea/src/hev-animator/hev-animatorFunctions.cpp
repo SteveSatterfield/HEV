@@ -102,7 +102,7 @@ static void rec(bool) ;
 ////////////////////////////////////////////////////////////////////////
 static bool init(int argc, char** argv)
 {
-    if (argc < 3) return false ;
+    if (argc < 3) return(false);
     
     // use an ArgumentParser object to manage the program arguments.
     iris::ArgumentParser args(&argc,argv);
@@ -129,7 +129,7 @@ static bool init(int argc, char** argv)
 	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(first_frame)) || first_frame<0)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal first frame number\n") ;
-	    return false ;
+	    return(false);
 	}
 	first = init_first = first_frame ;
 	current = first+1 ;
@@ -141,7 +141,7 @@ static bool init(int argc, char** argv)
 	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(last_frame)) || last_frame<=0)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal last frame number\n") ;
-	    return false ;
+	    return(false);
 	}
 	last = init_last = last_frame ;
     }
@@ -152,7 +152,7 @@ static bool init(int argc, char** argv)
 	if (!args.read(args.argv()[pos], osg::ArgumentParser::Parameter(t)) || t<=0)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal frame time\n") ;
-	    return false ;
+	    return(false);
 	}
 	frameTime = init_frameTime = t ;
     }
@@ -160,18 +160,18 @@ static bool init(int argc, char** argv)
     if (args.findOption()!=0)
     {
 	dtkMsg.add(DTKMSG_ERROR, "hev-animator: illegal options\n") ;
-	return false ;
+	return(false);
     }
 
     if (args.argc()<=1)
     {
 	dtkMsg.add(DTKMSG_ERROR, "hev-animator: shared memory name not given\n") ;
-	return false ;	
+	return(false);	
     }
 
     dtkMsg.add(DTKMSG_INFO, "hev-animator: using shared memory file %s\n",args[1]) ;
     shm = new dtkSharedMem(sizeof(int), args[1]) ;
-    if (shm->isInvalid()) return false ;
+    if (shm->isInvalid()) return(false);
 
     {
 	std::string path ;
@@ -191,12 +191,12 @@ static bool init(int argc, char** argv)
 	if (init_last == 0)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: no files given and --last not specified\n") ; 
-	    return false ;
+	    return(false);
 	}
 	if (init_last <= init_first)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: no files given and --last not greater than --first\n") ; 
-	    return false ;
+	    return(false);
 	}
     }
     else // load files
@@ -208,19 +208,19 @@ static bool init(int argc, char** argv)
 	    if (!n)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "hev-animator: unable to open file %s\n",argv[j]) ; 
-		return false ;
+		return(false);
 	    }
 	    osg::Group* g = dynamic_cast<osg::Group*>(n) ;
 	    if (!g)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "hev-animator: file %s is not based on osg::Group\n",argv[j]) ; 
-		return false ;
+		return(false);
 	    }
 	    
 	    if (g->getNumChildren()==0)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has zero children- nothing to do!\n") ;
-		return false ;
+		return(false);
 	    }
 	    
 	    if (descend)
@@ -234,7 +234,7 @@ static bool init(int argc, char** argv)
 		    if (!g || g->getNumChildren()==0)
 		    {
 			dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has zero children- nothing to do!\n") ;
-			return false ;
+			return(false);
 		    }
 		}
 	    }
@@ -248,7 +248,7 @@ static bool init(int argc, char** argv)
 		if (children != g->getNumChildren())
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "hev-animator: %s does not have the same number of children as previous files\n",argv[j]) ; 
-		    return false ;
+		    return(false);
 		}
 	    }
 	    
@@ -267,7 +267,7 @@ static bool init(int argc, char** argv)
 		    if (nm == "") 
 		    {
 			dtkMsg.add(DTKMSG_INFO, "hev-animator: node has a blank node name\n") ;
-			return false ;
+			return(false);
 		    }
 		    else
 		    {
@@ -285,12 +285,12 @@ static bool init(int argc, char** argv)
 	if (children == 1)
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has only one child- nothing to do!\n") ;
-	    return false ;
+	    return(false);
 	}
 	else if (init_last >= children) // last out of bounds
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "hev-animator: node has fewer children than --last value\n") ; 
-	    return false ;
+	    return(false);
 	}
     }
 
@@ -302,7 +302,7 @@ static bool init(int argc, char** argv)
     dtkMsg.add(DTKMSG_INFO, "hev-animator: init_first = %d, first = %d, init_last = %d, last = %d, children = %d\n",init_first,first,init_last,last,children) ;
 
     fflush(stdout) ;
-    return true ;
+    return(true);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -656,6 +656,8 @@ static void rec(bool b)
 		else printf("NODEMASK %s OFF\n", ((group_nodes[j])[i-1]).c_str()) ;
 		printf("NODEMASK %s ON\n", ((group_nodes[j])[i]).c_str()) ;
 	    }
+	    fflush(stdout);
+	    fprintf(stderr,">>>>> AA\n");
 	    if (i<=last-stride) printf("FRAME\n") ; 
 	    shm->write(&i) ;
 	}

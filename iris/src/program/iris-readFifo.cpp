@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     if (argc < 2 || argc > 6)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     // call this when exiting
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	    if (c<argc && !iris::StringToInt(argv[c],&ticks)) 
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-readFifo: invalid usleep value\n") ;
-		return 1 ; 
+		exit(1); 
 	    }
 	    c++ ;
 	}
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	else
 	{
 	    usage() ;
-	    return 1 ;
+	    exit(1);
 	}
     }
     iris::FifoReader fifo  ;
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     if (!fifo.open())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-readFifo: can't open fifo\n") ;
-	return 1 ;
+	exit(1);
     }
     fifo.unlinkOnExit(unlinkFifo) ;
     std::string line ;
@@ -84,5 +84,5 @@ int main(int argc, char **argv)
 	}
 	else usleep(ticks) ;
       }
-    return 0 ;
+    exit(0);
 }

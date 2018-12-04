@@ -37,6 +37,6 @@ $ hevhere
 $ make install
 ```
 
-Wesley Griffin
-Updated: 2018-03-29
+Steve Satterfield
+Updated: 2018-12-02
 

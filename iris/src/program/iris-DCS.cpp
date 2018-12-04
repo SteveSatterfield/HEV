@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     if (argc<2)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     // send messages to stderr
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     if (args.argc()<2)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     nodeName = args[1] ;
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 	if (iris::IsSubstring("--help",args[i],4))
 	{
 	    usage() ;
-	    return 0 ;
+	    exit(0);
 	}
 	else if (iris::IsSubstring("--translate",args[i],4))
 	{
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 	    if (i+3>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    double x, y, z ;
 	    if (args.read(args[i],x,y,z))
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid translation \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 	else if (iris::IsSubstring("--euler",args[i],4))
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 	    if (i+3>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    double h, p, r ;
 	    if (args.read(args[i],h,p,r))
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid euler \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 	else if (iris::IsSubstring("--quat",args[i],4))
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 	    if (i+4>=args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    double x, y, z, w ;
 	    if (args.read(args[i],x,y,z,w))
@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 	    else
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid quat \"%s,%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3],args[i+4]) ;
-		return 1 ;
+		exit(1);
 	    }
 	}
 	else if (iris::IsSubstring("--scale",args[i],4))
@@ -153,7 +153,7 @@ int main(int argc, char** argv)
 		else
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid scale \"%s\"\n",args[i+1]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	    else // try for non-uniform scale
@@ -161,12 +161,12 @@ int main(int argc, char** argv)
 		if (i+3>=args.argc())
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		    return 1 ;
+		    exit(1);
 		}
 		if (!args.read(args[i],x,y,z))
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid translation \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	    printf("#  scale %f %f %f\n",x,y,z) ;
@@ -179,17 +179,17 @@ int main(int argc, char** argv)
 	    if (examine)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify both --examine and --center\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (center)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify more than one --center\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (translate)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify --translate before --center\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    center = true ;
 	    double x, y, z ;
@@ -205,12 +205,12 @@ int main(int argc, char** argv)
 		if (i+3>=args.argc())
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		    return 1 ;
+		    exit(1);
 		}
 		if (!args.read(args[i],x,y,z))
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid center \"%s,%s,%s\"\n",args[i+1],args[i+2],args[i+3]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	    printf("#  center %f %f %f\n",x,y,z) ;
@@ -222,18 +222,18 @@ int main(int argc, char** argv)
 	    if (examine)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify both --examine and --bound\n") ;
-		return 1 ;
+		exit(1);
 	    }
 
 	    if (bound)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify more than one --bound\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (scale)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify --scale before --bound\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    bound = true ;
 	    transformation.type = BOUND ;
@@ -249,7 +249,7 @@ int main(int argc, char** argv)
 		if (!args.read(args[i],b))
 		{
 		    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: invalid bound \"%s\"\n",args[i+1]) ;
-		    return 1 ;
+		    exit(1);
 		}
 	    }
 	    transformation.scale = osg::Vec3(b,b,b) ;
@@ -261,17 +261,17 @@ int main(int argc, char** argv)
 	    if (examine)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify more than one --examine\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (translate || scale)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify --translate or --scale before --examine\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    if (bound || center)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify --bound or --center with --examine\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    examine = true ;
 	    printf("#  examine\n") ;
@@ -289,7 +289,7 @@ int main(int argc, char** argv)
 	    if ((i+1)==args.argc())
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    // where's the next option?
 	    int j = args.findOption(i+1) ;
@@ -297,7 +297,7 @@ int main(int argc, char** argv)
 	    if ((j-i)==1)
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-DCS: not enough parameters\n") ;
-		return 1 ;
+		exit(1);
 	    }
 	    for (int k=i+1; k<j; k++)
 	    {
@@ -308,7 +308,7 @@ int main(int argc, char** argv)
 	else
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: unknown option \"%s\"\n",args[i]) ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
@@ -331,7 +331,7 @@ int main(int argc, char** argv)
 	if (!child) 
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't load model file \"%s\"\n",load[i].c_str()) ;
-	    return 1 ;
+	    exit(1);
 	}
 	group->addChild(child) ;
 	if (child->getName() != "") childNames.push_back(child->getName()) ;
@@ -343,7 +343,7 @@ int main(int argc, char** argv)
     if ((bound || center || examine) && load.size() == 0)
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-DCS: can't specify --center, --bound or --examine without also loading model files\n",args[i]) ;
-	return 1 ;
+	exit(1);
     }
 
     // generate a matrix with the compounded transformation
@@ -441,5 +441,5 @@ int main(int argc, char** argv)
 
     printf("RETURN \"%s\"\n",nodeName.c_str()) ;
 
-    return 0 ;
+    exit(0) ;
 }

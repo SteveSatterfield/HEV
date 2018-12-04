@@ -16,11 +16,11 @@
 #include <iostream>
 #include <string>
 
-#define PROGRAM_NAME "dtk-writeLine"
+#define  PROGRAM_NAME  "dtk-writeLine"
 
 static int Usage(char *name) {
   fprintf(stdout,
-	 " Usage: "PROGRAM_NAME" SHM_FILE [SIZE] [data]\n\n"
+	 " Usage: " PROGRAM_NAME " SHM_FILE [SIZE] [data]\n\n"
 	 "  Write data to the DTK shared memory file named SHM_FILE\n"
 	 "  whose size is SIZE bytes.\n"
 	 "  SIZE can be give as \"-\" if the shared memory segment\n"
@@ -95,7 +95,8 @@ int main(int argc, char **argv) {
     
   } else {      // read from stdin
     std::string line ;
-    while (getline(std::cin, line)>0) {
+    //    while (getline(std::cin, line)>0) {  // sgs 4/27/18
+    while (getline(std::cin, line)) {
       int datalen = strlen(line.c_str())+1 ;
       if (datalen > size) {
 	dtkMsg.add(DTKMSG_ERROR,

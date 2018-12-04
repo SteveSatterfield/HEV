@@ -19,16 +19,16 @@ int main(int argc, char **argv)
     if (wl.size()==0)
     {
 	dtkMsg.add(DTKMSG_ERROR,"iris-DISPLAYfromWindow: no Windows defined\n") ;
-	return 1 ;
+	exit(1);
     }
     else if (wl.size()>1)
     {
 	dtkMsg.add(DTKMSG_ERROR,"iris-DISPLAYfromWindow: %d Windows defined\n",wl.size()) ;
-	return 1 ;
+	exit(1);
     }
 
     osg::GraphicsContext::Traits* traits = wl[0]->getTraits() ;
     printf("%s\n",traits->displayName().c_str()) ;
     dtkMsg.add(DTKMSG_INFO,"iris-DISPLAYfromWindow: DISPLAY=%s\n",traits->displayName().c_str()) ;
-    return 0 ;
+    exit(0);
 }

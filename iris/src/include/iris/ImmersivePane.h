@@ -27,6 +27,16 @@ namespace iris
     public:
 	ImmersivePane(Window* window, const char* name = NULL) : Pane(window, name), _extent(osg::Vec2(2.f, 2.f)), _center(osg::Vec3(0.f, 1.f, 0.f)), _orientation(osg::Quat(0.f,0.f,0.f,1.f)) {} ;
 
+      //{sgs 12/3/2018
+        ImmersivePane(bool addToList = true) : Pane(NULL,NULL)
+	{ 
+	    if (addToList) 
+	    {
+		_paneList.push_back(this) ;
+	    }
+	} ;
+      //}
+      
 	virtual ImmersivePane* asImmersive() { return this ; } ;
 
 	// calculates the projection and view matrices for an immersive pane

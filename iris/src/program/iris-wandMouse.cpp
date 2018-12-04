@@ -136,11 +136,11 @@ bool addButton(std::string shmName, int mask, int num)
         dtkMsg.add(DTKMSG_ERROR, 
             "iris-wandMouse: can't open button shared memory \"%s\"\n", 
             b->shmName.c_str()) ;
-        return false ;
+        exit(false);
     }
     b->shm->read(&(b->value)) ;
     buttons.push_back(*b) ;
-    return true ;
+    exit(true);
 }
 ////////////////////////////////////////////////////////////////////////
 static void
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
     if ((pos=args.findSubstring("--help",4))>0)
     {
         usage() ;
-        return 0 ;
+        exit(0);
     }
 
     int ticks = iris::GetUsleep() ;
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
         dtkMsg.add(DTKMSG_ERROR, 
             "iris-wandMouse: can't open shared memory \"%s\"\n", 
             wandShmName.c_str()) ;
-        return 1 ;
+        exit(1);
     }
 
     // buttons
@@ -228,15 +228,15 @@ int main(int argc, char **argv)
         {
             dtkMsg.add(DTKMSG_ERROR, 
                         "iris-wandMouse: error parsing button parameters\n") ;
-            return 1 ;
+            exit(1);
         }
 
-        if (!addButton(shmName, mask, num)) return 1 ;
+        if (!addButton(shmName, mask, num)) exit(1);
     }
 
     if (buttons.size() == 0)
     {
-        if (!addButton("buttons", 2, 1)) return 1 ;
+        if (!addButton("buttons", 2, 1)) exit(1);
     }
 
     // you need one of these to read in the DSOs and model files that 
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
     if (immersivePane == NULL)
     {
         dtkMsg.add(DTKMSG_ERROR,"iris-wandMouse: no immersive pane found\n") ;
-        return 1 ;
+        exit(1);
     }
 
     // collect data about the pane, window and display
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
     if ((Xdisplay = XOpenDisplay(display.name.c_str())) == NULL) {
         dtkMsg.add(DTKMSG_ERROR, "iris-wandMouse: cannot open X display %s.\n",
                         display.name.c_str());
-        return 1;
+        exit(1);
     }
     root = DefaultRootWindow(Xdisplay);
     
@@ -368,7 +368,7 @@ int main(int argc, char **argv)
     {
         dtkMsg.add(DTKMSG_ERROR, 
             "iris-wandMouse: XTest extension not supported on server.\n");
-        return 1;
+        exit(1);
     }
 
 #if GLYPH
@@ -675,7 +675,7 @@ int main(int argc, char **argv)
                 {
                     dtkMsg.add(DTKMSG_ERROR, 
                      "iris-wandMouse: can't get windowID of immersive pane.\n");
-                    return 1 ;
+                    exit(1);
                 }
                 //fprintf(stderr, "this window = 0x%x\n",thisWindow) ;
                 
@@ -686,7 +686,7 @@ int main(int argc, char **argv)
                 {
                     dtkMsg.add(DTKMSG_ERROR, 
                      "iris-wandMouse: can't get windowID of focused window.\n");
-                    return 1 ;
+                    exit(1);
                 }
 
                 // fprintf(stderr,"focusedWindow = 0x%x\n",focusedWindow) ;
@@ -740,7 +740,7 @@ int main(int argc, char **argv)
                     {
                         dtkMsg.add(DTKMSG_ERROR, 
                           "iris-wandMouse: XTestFakeButtonEvent failed.\n");
-                        return 1 ;
+                        exit(1);
                     }
                     XFlush(Xdisplay);
                     XSync(Xdisplay,0);
@@ -764,7 +764,7 @@ int main(int argc, char **argv)
 
     } // while (running)
 
-    return 0 ;
+    exit(0);
 
 } // end of main
 

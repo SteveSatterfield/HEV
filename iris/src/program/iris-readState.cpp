@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     if (argc != 1 && argc != 3) 
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-readState: invalid number of arguments\n") ;
-	return 1 ;
+	exit(1);
     }
 
     int ticks = iris::GetUsleep() ;
@@ -51,14 +51,14 @@ int main(int argc, char **argv)
 	    if (!iris::StringToInt(argv[c],&ticks)) 
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-readState: invalid usleep value\n") ;
-		return 1 ; 
+		exit(1); 
 	    }
 	    c++ ;
 	}
 	else
 	{
 	    fprintf(stderr,"iris-readState: invalid option\n") ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 	}
 	usleep(ticks) ;
     }
-    return 0 ;
+    exit(0);
 }
 
 

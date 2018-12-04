@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     if (argc < 2 || argc > 6)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     // call this when exiting
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	    if (c<argc && !iris::StringToInt(argv[c],&ticks)) 
 	    {
 		dtkMsg.add(DTKMSG_ERROR, "iris-readStdinUpdateShmWriteStdout: invalid usleep value\n") ;
-		return 1 ; 
+		exit(1); 
 	    }
 	    c++ ;
 	}
@@ -83,20 +83,20 @@ int main(int argc, char **argv)
 	else
 	{
 	    usage() ;
-	    return 1 ;
+	    exit(1);
 	}
     }
 
     if (c+1 != argc)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     char* shmName = argv[c] ;
 
     dtkSharedMem* shm = new dtkSharedMem(shmName) ;
-    if (shm->isInvalid()) return 1 ;
+    if (shm->isInvalid()) exit(1);
     
     size_t shmSize = shm->getSize() ;
     
@@ -181,5 +181,5 @@ int main(int argc, char **argv)
 
 	usleep(ticks) ;
     }
-    return 0 ;
+    exit(0);
 }

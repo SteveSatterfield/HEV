@@ -21,6 +21,18 @@ namespace iris
     {
     public:
 	PerspectivePane(Window* window, const char* name = NULL) : Pane(window, name), _fov(60), _aspect(1.f) {} ;
+
+      
+      //{sgs  12/3/2018
+        PerspectivePane(bool addToList = true) : Pane(NULL,NULL)
+	{ 
+	    if (addToList) 
+	    {
+		_paneList.push_back(this) ;
+	    }
+	} ;
+      //}
+
 	
 	virtual PerspectivePane* asPerspective() { return this ; } ;
 

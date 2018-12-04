@@ -15,7 +15,8 @@ bool parse_int(char const* str, int* result) {
     char* end = NULL;
     long int value = strtol(str, &end, 0);
 
-    if (str=='\0' || *end!='\0') {
+    //sgs 12/3/2018    if (str=='\0' || *end!='\0') {
+    if (str==NULL || *end!=NULL) {
         errno = EINVAL;
         return false;
     } else if ((value==LONG_MIN || value==LONG_MAX) && errno==ERANGE) {

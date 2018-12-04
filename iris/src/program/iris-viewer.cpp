@@ -95,13 +95,13 @@ int main(int argc, char **argv)
 	  // this will check for both single and double dash options
 	  if (args.argv()[i][0] == '-') dtkMsg.add(DTKMSG_ERROR, "iris-viewer:   %s\n",args.argv()[i]) ;
 	}
-	return 1 ;
+	exit(1);
     }
 
     if (args.errors())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-viewer: error parsing args\n") ;
-	return 1 ;
+	exit(1);
     }
 
     // creates the scenegraph and default viewer
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     if (isg.isInvalid())
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-viewer: couldn't create iris::SceneGraph object\n") ;
-	return 1;
+	exit(1);
     }
 
     // set logging options
@@ -191,6 +191,6 @@ int main(int argc, char **argv)
 
     while (isg.run()) ;
 
-    return 0 ;
+    exit(0);
 }   
 

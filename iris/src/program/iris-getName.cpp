@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     if (argc<2)
     {
 	usage() ;
-	return 1 ;
+	exit(1);
     }
 
     // send messages to stderr
@@ -31,16 +31,16 @@ int main(int argc, char** argv)
     if (!node) 
     {
 	dtkMsg.add(DTKMSG_ERROR, "iris-getName: can't load model file \"%s\"\n",args[1]) ;
-	return 1 ;
+	exit(1);
     }
 
     std::string name = node->getName() ;
     if (name == "")
     {
 	dtkMsg.add(DTKMSG_WARNING, "iris-getName: model file \"%s\" does not return a node with a name\n",args[1]) ;
-	return 0 ;
+	exit(0);
     }
     else printf("%s\n",name.c_str()) ;
 
-    return 0 ;
+    exit(0);
 }

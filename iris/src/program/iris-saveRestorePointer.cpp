@@ -42,7 +42,7 @@ int main(int argc, char **argv)
   
   root = XDefaultRootWindow(dpy) ;
   
-  if(!XQueryPointer(dpy, root, &ret_root, &ret_child, &root_x, &root_y, &win_x, &win_y, &mask)) return 1 ;
+  if(!XQueryPointer(dpy, root, &ret_root, &ret_child, &root_x, &root_y, &win_x, &win_y, &mask)) exit(1);
 
   if (display) dtkMsg.add(DTKMSG_INFO, "iris-saveRestorePointer: saving pointer on display %s at %d %d\n", display, root_x, root_y) ;
   else dtkMsg.add(DTKMSG_INFO, "iris-saveRestorePointer: saving pointer on at %d %d\n", root_x, root_y) ;
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
   sleep(100000000) ;
 
-  return 0;
+  exit(0);
 }
 
 

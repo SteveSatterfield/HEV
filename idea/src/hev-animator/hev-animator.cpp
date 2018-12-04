@@ -21,14 +21,14 @@ int main(int argc, char **argv)
 			  &other_argc, &other_argv)) 
     {
 	usage() ;
-	return 1 ;
+	return(1);
     }
     
     // parse the local arguments and do other setup
     if(! init(other_argc, other_argv))
     {
 	usage() ;
-	return 1 ;
+	return(1);
     }
     
     //fprintf(stderr,"before creating window and running GUI\n") ;
@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 
     while (Fl::wait() && running)
     {
+
 	// if you exit the main window, stop running the application
 	if (!main_window->shown()) running = false ;
 
@@ -63,14 +64,13 @@ int main(int argc, char **argv)
 	    settingsState = false ;
 	    settingsButton->value(false) ;
 	}
-
     };
 
     ////////////////
     // here's your chance to do cleanup
     //fprintf(stderr,"after GUI has exited\n") ;
 
-    return 0 ;
+    return(0);
 }
 
 
