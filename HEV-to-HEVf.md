@@ -94,4 +94,8 @@ Here are the significant changes and additions made going from HEV (at time f fo
 -   idea/src/hev-animator
 
     change statements like "return 1" to "returs(1);"
-    
+
+-    iris-exitOnThreeButtons
+
+     usleep to sleep
+     

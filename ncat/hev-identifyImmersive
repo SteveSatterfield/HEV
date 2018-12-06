@@ -1,0 +1,9 @@
+#! /bin/bash
+#
+# hev-identifyImmersive - identy type of immersive environment
+#
+# poor choice of name, it should be hev-identifyEnvironment
+
+#echo rave
+echo desktop
+

@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if [ "$1"x == "-vx" ]
+then
+    echo IMMERSIVE
+fi
+exit 0
+

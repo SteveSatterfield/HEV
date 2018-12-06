@@ -329,7 +329,7 @@ fi
 export PATH="$HEV_IDEA_DIR/etc/irisfly/bin:$PATH"
 
 # display is set so new GUIs will appear on the correct screen
-command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
+command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $NCAT_FILES $viewerStuff"
 dtk-msgInfo irisfly: $command
 $command
 
