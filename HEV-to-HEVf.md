@@ -18,8 +18,10 @@ Here are the significant changes and additions made going from HEV (at time f fo
 
 - external/osg/OpenSceneGraph-3.2.0/src/osgPlugins/x/directx.cpp
 
-  We can live without the directx pluging fof now, so comment out and
-  move on.
+  We can live without the directx pluging for now, so comment out and
+  move on. 12/7/2018 Turns out, since the src tree is extracted fresh
+  on each full make  install, disabling x requires commenting it out
+  of the CMakeLists.txt just after the untar top level GNUmakefile.
 
 -  errors building vtk. 
 

@@ -2,12 +2,16 @@
 all:
 	@echo "all target not defined"
 
+
+# sgs 12/7/2018 - The directx plugin isn't compiling for m under Fedora,
+#                 so for now remove and ignore it.
 .configure.done:
 	@if [ ! -d OpenSceneGraph-3.2.0 ]; then \
 		unzip OpenSceneGraph-3.2.0.zip && \
 		cd OpenSceneGraph-3.2.0 && \
 		patch -p1 < ../osg-HEV.patch && \
 		cd ..; \
+		sed -i '/ADD_SUBDIRECTORY(x)/s/^/#/' OpenSceneGraph-3.2.0/src/osgPlugins/CMakeLists.txt ; \
 	fi && \
 	mkdir -p build && \
 	cd build && cmake \
