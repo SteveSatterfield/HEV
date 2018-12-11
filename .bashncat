@@ -21,22 +21,26 @@ export NCAT_FILES=${HOME}/.hev_ncat_traits.iris
 
 if [ ! -f $NCAT_FILES ]
 then
+    echo Creating $NCAT_FILES	
     set `xdpyinfo| awk '/dimensions/{print $2;}' | sed 's/x/ /'`
     w=$1
     h=$2
     x=`echo \(${w}-${h}\)/2 | bc`
     y=0
     w=$h
-    
+
 cat > ${NCAT_FILES}  <<EOF
-before realize WINDOW desktop TRAIT X ${x}
-before realize WINDOW desktop TRAIT Y  0
-before realize WINDOW desktop TRAIT HEIGHT ${h}
-before realize WINDOW desktop TRAIT WIDTH  ${w}
+before realize WINDOW desktopWindow TRAIT X ${x}
+before realize WINDOW desktopWindow TRAIT Y  0
+before realize WINDOW desktopWindow TRAIT HEIGHT ${h}
+before realize WINDOW desktopWindow TRAIT WIDTH  ${w}
 EOF
 
+else
+    echo Using existing $NCAT_FILES
 fi
 
+cat $NCAT_FILES
 echo HEV for NCAT ready
 
 # Done

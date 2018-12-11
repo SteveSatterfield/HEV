@@ -879,6 +879,9 @@ namespace iris
 
         processBeforeRealizeWhenCommands() ;
 
+
+	fprintf(stderr,"Before realized commands just processed\n");
+		
 #if 1
         // is this a bad assumption?  What if the .iris file loads a window and doesn't want the default?
         // how to get the viewer to not supply a default if we don't?
@@ -899,6 +902,8 @@ namespace iris
         // call realize for every Window object in the list
         for (unsigned int i=0; i<(Window::getWindowList()).size(); i++) 
         {
+	  fprintf(stderr,"calling resize for i=%d\n",i);
+		  
             (Window::getWindowList())[i]->realize() ;
         }
 #if 0

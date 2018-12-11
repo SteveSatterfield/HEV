@@ -711,8 +711,8 @@ namespace frameGrabber
                         cbd = new CallbackData ;
                         _callbackData.push_back(cbd) ;
 
-                        bool inStereo = window->getTraits()->quadBufferStereo;
-
+                        //sgs 12/10/2018 bool inStereo = window->getTraits()->quadBufferStereo;
+                        bool inStereo = window->getStereo();
                         osg::GLBufferObject::Extensions* ext =
                             osg::GLBufferObject::getExtensions(
                                 window->getGraphicsContext()->getState()->getContextID(),

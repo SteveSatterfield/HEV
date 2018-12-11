@@ -43,9 +43,14 @@ namespace iris
 	virtual bool control(const std::string& line) ;
 	virtual bool control(const std::string& line, const std::vector<std::string>&) ;
 
-	bool getStereo() { return getTraits()->quadBufferStereo ; } ;
-	void setStereo(bool stereo) { getTraits()->quadBufferStereo = stereo ; } ;
-	    
+      //{sgs 12/9/2018
+      //bool getStereo() { return getTraits()->quadBufferStereo ; } ;
+      //void setStereo(bool stereo) { getTraits()->quadBufferStereo = stereo ; } ;
+
+      bool getStereo() { fprintf(stderr,"------------> getStereo <------------\n");  return _sgsStereo ; } ;
+
+      void setStereo(bool stereo) {fprintf(stderr,"------------> setStereo <------------\n");   _sgsStereo = stereo ; } ;
+      //}
 	osg::GraphicsContext::Traits* const getTraits() { return _traits.get() ; } ;
 
 	osg::GraphicsContext* const getGraphicsContext() { return _gc.get() ; } ;
@@ -71,6 +76,7 @@ namespace iris
 	static std::vector<osg::ref_ptr<Window> > _windowList ;
 	void _setTraits(Window* win, std::vector<std::string> vec) ;
 	bool _realized ;
+      bool _sgsStereo ;   // {sgs 12/9/2018 }
 	std::vector<osg::ref_ptr<Pane> > _paneList ;
 	osg::ref_ptr<osg::GraphicsContext::Traits> _traits ;
 	osg::ref_ptr<osg::GraphicsContext> _gc ;

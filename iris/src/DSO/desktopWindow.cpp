@@ -107,7 +107,7 @@ namespace desktopWindow
 
 	    setDescription("%s- a simple desktop window",getName()) ;
 
-	    _window = new iris::Window("desktop") ;
+	    _window = new iris::Window("desktopWindow") ;
 
 	    // traits define the window
 	    osg::GraphicsContext::Traits* const traits = _window->getTraits() ;
