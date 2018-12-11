@@ -1,0 +1,33 @@
+WAIT echo __________ immersive.iris started _________
+
+WAIT echo __________ immersive.iris load nav dso _________
+# navigation
+dso wandJoystickZNav
+dso wandJoystickYNav
+dso wandJoystickNav
+dso trackballNav
+
+WAIT echo __________ immersive.iris  distance the probe is in front of the wand _________
+# distance the probe is in front of the wand
+wait hev-writeFloats -c 1 idea/wandOffsetDistance 0.0833333
+
+WAIT echo __________ immersive.iris started  exit if three wand buttons are pushed _________
+# exit if three wand buttons are pushed
+exec iris-exitOnThreeButtons
+
+WAIT echo __________ immersive.iris put pointer back_________
+# put the pointer back after exiting
+# $IRIS_SAVE_RESTORE_POINTER was set in irisfly
+#sgs#exec iris-saveRestorePointer $IRIS_SAVE_RESTORE_POINTER
+exec echo wandMouse disabled in immersive.iris until we decide how to handle it on the Arc
+
+WAIT echo __________ immersive.iris stopsign_________
+# start stop sign
+AFTER REALIZE EXEC hev-screenContactAlert
+
+# Force powerwall windown below all othere
+AFTER REALIZE EXEC wmctrl -r Front -b add,below
+
+
+
+WAIT echo __________ immersive.iris finished _________
