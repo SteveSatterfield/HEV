@@ -1,0 +1,4 @@
+LOAD cessna cessna.osg
+ADDCHILD cessna world
+EXAMINE
+#SHADERPROG cessna V cessna.frag
