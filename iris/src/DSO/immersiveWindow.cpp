@@ -153,7 +153,6 @@ printBacktrace (void)
     int j, nptrs;
     void *buffer[BT_BUF_SIZE];
     char **strings;
-
     fflush (stderr);
 
     fprintf (stderr, "\n-------\n");

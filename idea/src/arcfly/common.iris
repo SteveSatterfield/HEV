@@ -34,7 +34,7 @@
 
   AFTER REALIZE EXEC hev-masterControlPanel -title MCP $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS --noescape --fifo $IRISFLY_MCP_CONTROL_FIFO $IRISFLY_MCP_FILES > $IRIS_CONTROL_FIFO
   echo on
-  AFTER REALIZE EXEC hev-lowerWindow Front > $IRIS_CONTROL_FIFO
+#  AFTER REALIZE EXEC hev-lowerWindow Front > $IRIS_CONTROL_FIFO
   echo off
 
  

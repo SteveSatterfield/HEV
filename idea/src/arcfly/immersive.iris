@@ -7,6 +7,9 @@ dso wandJoystickYNav
 dso wandJoystickNav
 dso trackballNav
 
+WAIT echo __________ interocular.mcp interocular coltrol slider
+AFTER REALIZE LOAD interocular.mcp
+
 WAIT echo __________ immersive.iris  distance the probe is in front of the wand _________
 # distance the probe is in front of the wand
 wait hev-writeFloats -c 1 idea/wandOffsetDistance 0.0833333
@@ -23,10 +26,12 @@ exec echo wandMouse disabled in immersive.iris until we decide how to handle it 
 
 WAIT echo __________ immersive.iris stopsign_________
 # start stop sign
-AFTER REALIZE EXEC hev-screenContactAlert
+#AFTER REALIZE EXEC hev-screenContactAlert
 
-# Force powerwall windown below all othere
-AFTER REALIZE EXEC wmctrl -r Front -b add,below
+# Force window below all othere
+AFTER REALIZE EXEC wmctrl -r hdFront -b add,below
+AFTER REALIZE EXEC wmctrl -r fourkFront -b add,below
+AFTER REALIZE EXEC wmctrl -r arcFront -b add,below
 
 
 

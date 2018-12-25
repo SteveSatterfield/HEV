@@ -91,7 +91,7 @@ case $DISPLAY in
     :0|:0.)
 	export DISPLAY=:0.0
 	;;
-    :1|:1.)
+    :1|:1.|:1.0)
 	export DISPLAY=:1.0
 	;;
     *)
@@ -137,7 +137,7 @@ echo "********** MCP_FILE_PATH:" $MC_FILE_PATH
 
 defaultDesktopDisplay="desktopDisplay.iris"       # $IRISFLY_DESKTOP_DISPLAY will override
 
-defaultPowerwallDisplay="powerwallDisplay.iris"   # $IRISFLY_IMMERSIVE_DISPLAY will override
+defaultRaveDisplay="raveDisplay.iris"   # $IRISFLY_IMMERSIVE_DISPLAY will override
 
 defaultSimulatorDisplay="simulatorDisplay.iris"   # $IRISFLY_SIMULATOR_DISPLAY will override
                                                   # make the rave the default simulator,
@@ -263,7 +263,7 @@ case $env in
 	;;
     immersive)
 	#irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
-	irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE_DISPLAY:-$defaultPowerwallDisplay}"
+	irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE_DISPLAY:-$defaultRaveDisplay}"
 	;;
     desktop)
 	irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
@@ -323,7 +323,7 @@ then
     irisfly_files="$irisfly_files ${IRISFLY_WANDMOUSE:-$defaultWandMouse}"
     export IRISFLY_WANDMOUSE_DISPLAY=$DISPLAY
     echo "********* IRISFLY_WANDMOUSE_DISPLAY:" $IRISFLY_WANDMOUSE_DISPLAY
-    export IRISFLY_WANDMOUSE_WINDOW="powerwallWindow"
+    export IRISFLY_WANDMOUSE_WINDOW="raveWindow"
 fi
 
 # this is the window where we save the pointer
@@ -410,14 +410,14 @@ export IRISFLY_HIDE_SHOW_WINDOWS
 cat /dev/null> $IRISFLY_HIDE_SHOW_WINDOWS
 
 # do this when you exit
-#if [ -n "$IRISFLY_EXIT_COMMANDS" ]
-#then trap "doit $IRISFLY_EXIT_COMMANDS" EXIT
-#fi
-# I know this is ugly -sgs
 if [ -n "$IRISFLY_EXIT_COMMANDS" ]
-then trap "killall -9 iris-wandMouse; doit $IRISFLY_EXIT_COMMANDS" EXIT
-else trap "killall -9 iris-wandMouse" EXIT
+then trap "doit $IRISFLY_EXIT_COMMANDS" EXIT
 fi
+# I know this is ugly -sgs
+#if [ -n "$IRISFLY_EXIT_COMMANDS" ]
+#then trap "pkill -9 iris-wandMouse; doit $IRISFLY_EXIT_COMMANDS" EXIT
+#else trap "pkill -9 iris-wandMouse" EXIT
+#fi
 
 
 # do pre iris-viewer commands

@@ -1,3 +1,8 @@
-dso raveFrontWindow
-dso raveLeftWindow
-dso raveFloorWindow
+# This really should be in arcDisplay.iris
+exec echo starting raveDisplay
+exec echo starting hdFrontWindow
+dso hdFrontWindow
+exec echo after loading  hdFrontWindow
+exec echo finished raveDisplay
+echo off
+

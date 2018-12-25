@@ -5,8 +5,7 @@
 #}
 
 SUBDIRS = \
-		  dtk coin osg gle \
-		      teem python3 R node
+		  dtk coin osg gle
 
 MAKETARGETS  = build install
 CLEANTARGETS = clean distclean
@@ -25,7 +24,7 @@ $(MAKETARGETS):
 	    if [ $$ret -ne 0 ] ; then exit $$ret ; fi  ; \
 		echo ; \
 	done
-	./.fixperm.sh # Set permissions if on Dradis and user in diverse group
+	@./.fixperm.sh # Set permissions if on Dradis and user in diverse group
 
 
 
