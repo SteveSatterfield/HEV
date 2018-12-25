@@ -1,7 +1,7 @@
 
 
 # Pull in aliases
-source .bashhev
+source ~/HEVf/.bashhev
 
 # Set HEV environment variables
 hevhere

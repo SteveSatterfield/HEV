@@ -203,17 +203,25 @@ namespace CLASS_NAME
 
     // Actual physical dimensions of the screens (viewport).
     // In this case we're using inches.
-    double hdFrontSize[2] =   { 20.5, 12.0 };
-    double hdBackSize[2] =    { 20.5, 12.0 };
-    double hdLeftSize[2] =    { 20.5, 12.0 };
-    double hdRightSize[2] =   { 20.5, 12.0 };
-    double hdFloorSize[2] =   { 20.5, 12.0 };
-    double hdCeilingSize[2] = { 20.5, 12.0 };
+//    double hdFrontSize[2] =   { 20.5, 12.0 };
+//    double hdBackSize[2] =    { 20.5, 12.0 };
+//    double hdLeftSize[2] =    { 20.5, 12.0 };
+//    double hdRightSize[2] =   { 20.5, 12.0 };
+//    double hdFloorSize[2] =   { 20.5, 12.0 };
+//    double hdCeilingSize[2] = { 20.5, 12.0 };
+
+    double hdFrontSize[2] =   { 12.0, 12.0 };
+    double hdBackSize[2] =    { 12.0, 12.0 };
+    double hdLeftSize[2] =    { 12.0, 12.0 };
+    double hdRightSize[2] =   { 12.0, 12.0 };
+    double hdFloorSize[2] =   { 12.0, 12.0 };
+    double hdCeilingSize[2] = { 12.0, 12.0 };
 
     // Physical length of one display unit (RAVE coord unit)
     // Same units should be used as for Size params.
     // In this case we're using inches.
-    double sizeOfOnehdUnit = 10.25; 
+  //    double sizeOfOnehdUnit = 10.25; 
+    double sizeOfOnehdUnit = 6.0; 
 
     // Current situation is that all screens have same pixel/rave unit.
     double PixelPerhdUnit[2];  // This will be calculated below
