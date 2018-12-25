@@ -86,7 +86,7 @@ namespace iris
 
 	for (unsigned int i=0; i<vec.size(); i+=2)
 	{
-	    //dtkMsg.add(DTKMSG_INFO, "iris::Window::control: window \"%s\", %s = %s\n",win->getName(),vec[i].c_str(), vec[i+1].c_str()) ;
+	    dtkMsg.add(DTKMSG_INFO, "iris::Window::control: window \"%s\", %s = %s\n",win->getName(),vec[i].c_str(), vec[i+1].c_str()) ;
 	    bool onOff ;
 	    int j ;
 	    if (IsSubstring("decoration", vec[i], 3) && OnOff(vec[i+1],&onOff)) traits->windowDecoration = onOff ;
@@ -110,20 +110,43 @@ namespace iris
 	    return ;
 	}
     
+	fprintf(stderr,"screenNum=%d displayNum=%d displayName=%s\n",getTraits()->screenNum, getTraits()->displayNum, getTraits()->displayName().c_str());
+	fprintf(stderr,"Manually set display name to use DISPLAY, but this is odd\n");
+	getTraits()->readDISPLAY() ; //    use whatever DISPLAY is set to
+
+	fprintf(stderr,"screenNum=%d displayNum=%d displayName=%s\n",getTraits()->screenNum, getTraits()->displayNum, getTraits()->displayName().c_str());
+
+
+	fprintf(stderr,"DISPLAY must be in the form :X.Y\n");
+ 
+
+	fprintf(stderr,"Window.cpp: Are we stereo?\n");
+        if (getStereo())
+	{
+	  fprintf(stderr,"Window.cpp: Yes\n");
+	} else {
+	  fprintf(stderr,"Window.cpp: No?\n");
+	}
+       
+
 	_gc = osg::GraphicsContext::createGraphicsContext(getTraits());
 	if (!_gc.valid())
 	{
 	    dtkMsg.add(DTKMSG_ERROR, "iris::Window::realize: %s: Graphics Window has not been created successfully.\n",getName());
 	    return ;
 	}
+	fprintf(stderr,"Window.cpp: gc created successfully\n");;
+
 
 	// default color outside the viewport is black
 	_gc->setClearColor( osg::Vec4f(0.f, 0.f, 0.f, 0.0f) );
 	_gc->setClearMask( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	fprintf(stderr,"clear color, clear mask\n");
+	//mapkbfprintf(stderr,"sleeping\n"); sleep(5); fprintf(stderr,"continue\n");
 
 	//fprintf(stderr,"gc = %p, mask = %d\n",_gc.get(),GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
 
-	//fprintf(stderr, "iris::Window::realize() %s, stereo = %d\n",getName(),getStereo()) ; 
+	fprintf(stderr, "iris::Window::realize() %s, stereo = %d\n",getName(),getStereo()) ; 
 
 	// these are defaults, so why set?
 	//getTraits()->screenNum = 0 ;
@@ -131,12 +154,18 @@ namespace iris
 
 	for (unsigned int p=0; p<_paneList.size(); p++)
 	{
+	  fprintf(stderr,"Window.cpp p=%d top\n",p);
+	  //fprintf(stderr,"sleeping\n"); sleep(5); fprintf(stderr,"continue\n");
 	    // this'll create the cameras
 	    Pane* np = _paneList[p].get() ;
 	    np->realize() ;
+	  fprintf(stderr,"Window.cpp p=%d bottom p\n",p);
+	  //fprintf(stderr,"sleeping\n"); sleep(5); fprintf(stderr,"continue\n");
 	}
     
 	_realized = true ;
+	//fprintf(stderr,"sleeping\n"); sleep(5);
+	   fprintf(stderr,"realize done, continue\n");
     }
 
     ////////////////////////////////////////////////////////////////////////

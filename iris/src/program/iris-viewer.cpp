@@ -188,9 +188,7 @@ int main(int argc, char **argv)
     // first frame will automatically realize
     //isg.realize() ;
     isg.frame() ;
-
     while (isg.run()) ;
-
     exit(0);
 }   
 

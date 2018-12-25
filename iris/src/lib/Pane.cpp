@@ -4,12 +4,8 @@
 #include <iris/ImmersivePane.h>
 #include <iris/OrthoPane.h>
 #include <iris/PerspectivePane.h>
-#include <osg/PolygonStipple>
-#include <osg/Stencil>
 
 //#define IRIS_VERSION_1_3
-
-int sgskludge=0;
 
 namespace iris
 {
@@ -311,153 +307,49 @@ namespace iris
     } ;
 
     ////////////////////////////////////////////////////////////////////////
+    void Pane::realize()
+    {
 
-  /*
+	if (_realized) return ;
 
-  static const GLubyte patternHorzEven[] = {
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
-    0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
-  */
+	osg::ref_ptr<osg::GraphicsContext::Traits> traits = _window->getTraits() ;
 
-  
+	if (!_viewportSet)
+	{
+	    setViewport(0, 0, traits->width, traits->height) ;
+	}
 
-  static const GLubyte patternHorzEven[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-  static const GLubyte patternHorzEven2[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-
-
-   void Pane::realize()
-   {
-     //fprintf(stderr,"sgskludge=%d\n",sgskludge);
-	//sleep(5);
-	//printf(stderr,"sgskludge=%d\n",sgskludge);
-	 //	   sleep(5);
-       if (_realized) return ;
-
-       osg::ref_ptr<osg::GraphicsContext::Traits> traits = _window->getTraits() ;
-
-       if (!_viewportSet)
-	 {
-	   setViewport(0, 0, traits->width, traits->height) ;
-	 }
-
-         // sorta kludgey way to set up stereo screens
-         // you define two Camera objects if doing stereo
-         // if doing stereo you'd use GL_BACK_LEFT or GL_BACK_RIGHT if double buffer, or
-         // GL_FRONT_LEFT or GL_FRONT_RIGHT if single buffer
-         std::vector<GLenum> buffers ;
-	 osg::ref_ptr<osg::Camera> camera1 = new osg::Camera ;
-	 camera1->setClearColor(SceneGraph::instance()->getClearColor()) ;
-	 //camera1->setClearColor(osg::Vec4(0.,0.,1.,1.)) ;
-	 // this'll make the area outside of the viewport match the gc's clear color
-	 //camera1->setClearMask( GL_DEPTH_BUFFER_BIT );
-	 //{sgs 12/9/2018
-
-	 //if (_sgsStereo)
-	if (sgskludge<2)
-	 {
-	   fprintf(stderr,"------------> Set up Stereo %d<------------\n",sgskludge);
-	   sgskludge=sgskludge+1;
-
-	   osg::ref_ptr<osg::Camera> camera2 = new osg::Camera ;
-	   camera2->setClearColor(SceneGraph::instance()->getClearColor()) ;
-	   //camera2->setClearColor(osg::Vec4(0.,1.,0.,1.)) ;
-
-	   // taken from View.cpp
-	   osg::ref_ptr<osg::Geometry> geometry = osg::createTexturedQuadGeometry(osg::Vec3(-1.0f,-1.0f,0.0f), osg::Vec3(2.0f,0.0f,0.0f), osg::Vec3(0.0f,2.0f,0.0f), 0.0f, 0.0f, 1.0f, 1.0f);
-	   osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-	   geode->addDrawable(geometry.get());
-	   camera1->addChild(geode.get());
-
-	   osg::ref_ptr<osg::Geometry> geometry2 = osg::createTexturedQuadGeometry(osg::Vec3(-1.0f,-1.0f,0.0f), osg::Vec3(2.0f,0.0f,0.0f), osg::Vec3(0.0f,2.0f,0.0f), 0.0f, 0.0f, 1.0f, 1.0f);
-	   osg::ref_ptr<osg::Geode> geode2 = new osg::Geode;
-	   geode2->addDrawable(geometry2.get());
-	   camera2->addChild(geode2.get());
-
-	   osg::ref_ptr<osg::StateSet> stateset = geode->getOrCreateStateSet();
-	   osg::ref_ptr<osg::StateSet> stateset2 = geode->getOrCreateStateSet();
-	   // set up stencil                                                                                             
-	   osg::ref_ptr<osg::Stencil> stencil = new osg::Stencil;
-	   stencil->setFunction(osg::Stencil::ALWAYS, 1, ~0u);
-	   stencil->setOperation(osg::Stencil::REPLACE, osg::Stencil::REPLACE, osg::Stencil::REPLACE);
-	   stencil->setWriteMask(~0u);
-	   stateset->setAttributeAndModes(stencil.get(), osg::StateAttribute::ON);
-
-	   osg::ref_ptr<osg::Stencil> stencil2 = new osg::Stencil;
-	   stencil2->setFunction(osg::Stencil::ALWAYS, 1, ~0u);
-	   stencil2->setOperation(osg::Stencil::REPLACE, osg::Stencil::REPLACE, osg::Stencil::REPLACE);
-	   stencil2->setWriteMask(~0u);
-	   stateset->setAttributeAndModes(stencil2.get(), osg::StateAttribute::ON);
-	   // set up polygon stipple
-
-	   stateset->setAttributeAndModes(new osg::PolygonStipple(patternHorzEven), osg::StateAttribute::ON);
-	   stateset2->setAttributeAndModes(new osg::PolygonStipple(patternHorzEven2), osg::StateAttribute::ON);
-
-	   _cameraList.push_back(camera1.get()) ;
-	   _cameraList.push_back(camera2.get()) ;
-	   if (traits->doubleBuffer)
-           {
-	     buffers.push_back(GL_BACK_LEFT) ;
-	     buffers.push_back(GL_BACK_RIGHT) ;
-	   }
-	   else
-	   {
-	       buffers.push_back(GL_FRONT_LEFT) ; 
-	       buffers.push_back(GL_FRONT_RIGHT) ; 
-	   }
-
+	// sorta kludgey way to set up stereo screens
+	// you define two Camera objects if doing stereo
+	// if doing stereo you'd use GL_BACK_LEFT or GL_BACK_RIGHT if double buffer, or
+	// GL_FRONT_LEFT or GL_FRONT_RIGHT if single buffer
+	std::vector<GLenum> buffers ;
+	osg::ref_ptr<osg::Camera> camera1 = new osg::Camera ;
+	camera1->setClearColor(SceneGraph::instance()->getClearColor()) ;
+	//camera1->setClearColor(osg::Vec4(1.,0.,0.,1.)) ;
+	// this'll make the area outside of the viewport match the gc's clear color
+	//camera1->setClearMask( GL_DEPTH_BUFFER_BIT );
+	_cameraList.push_back(camera1.get()) ;
+	if (traits->quadBufferStereo)
+	{
+	    osg::ref_ptr<osg::Camera> camera2 = new osg::Camera ;
+	    camera2->setClearColor(SceneGraph::instance()->getClearColor()) ;
+	    //camera2->setClearMask( GL_DEPTH_BUFFER_BIT );
+	    _cameraList.push_back(camera2.get()) ;
+	    if (traits->doubleBuffer)
+	    {
+		buffers.push_back(GL_BACK_LEFT) ;
+		buffers.push_back(GL_BACK_RIGHT) ;
+	    }
+	    else
+	    {
+		buffers.push_back(GL_FRONT_LEFT) ; 
+		buffers.push_back(GL_FRONT_RIGHT) ; 
+	    }
 	}
 	else
 	{
-	  _cameraList.push_back(camera1.get()) ;
-	  buffers.push_back(traits->doubleBuffer ? GL_BACK : GL_FRONT);
+	    buffers.push_back(traits->doubleBuffer ? GL_BACK : GL_FRONT);
 	}
 
 	for (unsigned int b=0; b<_cameraList.size(); b++)
@@ -494,9 +386,8 @@ namespace iris
 
 	    osg::ref_ptr<PaneCB> cb = new PaneCB(this) ;
 	    SceneGraph::instance()->getSceneNode()->addUpdateCallback(cb) ;
-	    //fprintf(stderr,"b=%d ",b);
 	}
-	fprintf(stderr,"\nend\n");
+
 	_realized = true ;
     }
 

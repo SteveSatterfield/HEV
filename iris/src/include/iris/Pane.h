@@ -115,7 +115,6 @@ namespace iris
 	Window* _window ;
 	const char* _name ;
 	bool _realized ;
-      bool _sgsStereo;
 	bool _active ;
 	std::vector<osg::ref_ptr<osg::Camera> > _cameraList ;
 	float _near ;
