@@ -190,32 +190,32 @@ namespace CLASS_NAME
 
     // The pixel dimensions of the full screen. 
     // ASSUMPTION: All screens are the same.
-    int fullDisplayPixelDim[2] = {1080, 1080};
+    int fullDisplayPixelDim[2] = {1920, 1080};
 
 
     // Viewports: x, y, w, h
-    int hdFrontVp[4] =   {0, 0, 1080, 1080};
-    int hdLeftVp[4] =    {0, 0, 1080, 1080};
-    int hdFloorVp[4] =   {0, 0, 1080, 1080};
-    int hdBackVp[4] =    {0, 0, 1080, 1080};
-    int hdRightVp[4] =   {0, 0, 1080, 1080};
-    int hdCeilingVp[4] = {0, 0, 1080, 1080};
+    int hdFrontVp[4] =   {0, 0, 1920, 1080};
+    int hdLeftVp[4] =    {0, 0, 1920, 1080};
+    int hdFloorVp[4] =   {0, 0, 1920, 1080};
+    int hdBackVp[4] =    {0, 0, 1920, 1080};
+    int hdRightVp[4] =   {0, 0, 1920, 1080};
+    int hdCeilingVp[4] = {0, 0, 1920, 1080};
 
     // Actual physical dimensions of the screens (viewport).
     // In this case we're using inches.
-//    double hdFrontSize[2] =   { 20.5, 12.0 };
-//    double hdBackSize[2] =    { 20.5, 12.0 };
-//    double hdLeftSize[2] =    { 20.5, 12.0 };
-//    double hdRightSize[2] =   { 20.5, 12.0 };
-//    double hdFloorSize[2] =   { 20.5, 12.0 };
-//    double hdCeilingSize[2] = { 20.5, 12.0 };
+    double hdFrontSize[2] =   { 20.5, 12.0 };
+    double hdBackSize[2] =    { 20.5, 12.0 };
+    double hdLeftSize[2] =    { 20.5, 12.0 };
+    double hdRightSize[2] =   { 20.5, 12.0 };
+    double hdFloorSize[2] =   { 20.5, 12.0 };
+    double hdCeilingSize[2] = { 20.5, 12.0 };
 
-    double hdFrontSize[2] =   { 12.0, 12.0 };
-    double hdBackSize[2] =    { 12.0, 12.0 };
-    double hdLeftSize[2] =    { 12.0, 12.0 };
-    double hdRightSize[2] =   { 12.0, 12.0 };
-    double hdFloorSize[2] =   { 12.0, 12.0 };
-    double hdCeilingSize[2] = { 12.0, 12.0 };
+//    double hdFrontSize[2] =   { 12.0, 12.0 };
+//    double hdBackSize[2] =    { 12.0, 12.0 };
+//    double hdLeftSize[2] =    { 12.0, 12.0 };
+//    double hdRightSize[2] =   { 12.0, 12.0 };
+//    double hdFloorSize[2] =   { 12.0, 12.0 };
+//    double hdCeilingSize[2] = { 12.0, 12.0 };
 
     // Physical length of one display unit (RAVE coord unit)
     // Same units should be used as for Size params.
@@ -296,7 +296,7 @@ namespace CLASS_NAME
             //
             // ASSUMPTION: Corner where screens converge is one unit out
             //             from RAVE origin in appropriate directions.
-            double frontLeftFloorCornerhdCoords[3] = {-1.0, 1.0, -1.0};
+            double frontLeftFloorCornerhdCoords[3] = {-1., 1., -1.};
 
 
             // Calculate the number of pixels in a RAVE unit.
@@ -326,6 +326,7 @@ namespace CLASS_NAME
                 frontLeftFloorCornerhdCoords[2] + 
                                 (hdFrontSize[1]/2.0)/sizeOfOnehdUnit
                 );
+
 
             osg::Vec3 hdLeftCenter = 
               osg::Vec3 ( 
@@ -425,9 +426,10 @@ namespace CLASS_NAME
             traits->height = VP[3] * pixScale + 0.5;
 
             osg::Vec2 vpExtent = osg::Vec2 ( VP[2]/PIX_PER_HD[0], 
-                                             VP[3]/PIX_PER_HD[1] ) ;
+                                             VP[3]/PIX_PER_HD[0] ) ;
 
 
+	    
 	    fprintf(stderr,"vp[0]=%d vp[1]=%d vp[2]=%d vp[3]=%d \n",
 		    VP[0], VP[1], VP[2], VP[3]);
             pane->setViewport (VP[0], VP[1], VP[2], VP[3]);
@@ -439,7 +441,12 @@ namespace CLASS_NAME
             //             and on all screens.
             pane->setExtent ( vpExtent );
 
-            pane->setCenter ( CENTER );
+	    fprintf(stderr,"===================== Center = %g %g %g\n",CENTER[0],CENTER[1],CENTER[3]);
+	    //	    CENTER[0]=1.;
+	    //	    CENTER[1]=1.;
+	    //	    CENTER[2]=0.;
+	    //	    fprintf(stderr,"===================== Center = %g %g %g\n",CENTER[0],CENTER[1],CENTER[3]);
+	    pane->setCenter ( CENTER );
 
             pane->setOrientation ( ORIENTATION );
 
