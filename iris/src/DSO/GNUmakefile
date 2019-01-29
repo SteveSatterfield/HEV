@@ -2,12 +2,6 @@
 #       in ../lib has not already been done. This can be
 #       ensured by doing the make in ../..
 
-#ifdef COMMENT
-DSOS = \
-	arcFrontWindow.so 				\
-	fourKFrontWindow.so 				\
-	hdFrontWindow.so 				\
-#endif
 
 DSOS = \
 	\
@@ -17,18 +11,9 @@ DSOS = \
 	wandJoystickYNav.so 					\
 	\
 	hdFrontWindow.so 						\
-	hdBackWindow.so 						\
-	hdLeftWindow.so 						\
-	hdRightWindow.so 						\
-	hdFloorWindow.so 						\
-	hdCeilingWindow.so 					\
 	\
 	fourkFrontWindow.so 						\
-	fourkBackWindow.so 						\
-	fourkLeftWindow.so 						\
-	fourkRightWindow.so 						\
-	fourkFloorWindow.so 						\
-	fourkCeilingWindow.so 					\
+	wsFrontWindow.so 						\
 	\
 	raveFrontWindow.so 						\
 	raveBackWindow.so 						\
@@ -115,52 +100,6 @@ hdFrontWindow.o: hdImmersiveWindow.cpp
 			-DSCR_NAME=hdFront \
 			$(INC) -o $@ $<
 
-hdBackWindow.o: hdImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdBack \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdBack \
-			$(INC) -o $@ $<
-
-hdLeftWindow.o: hdImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdLeft \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdLeft \
-			$(INC) -o $@ $<
-
-hdRightWindow.o: hdImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdRight \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdRight \
-			$(INC) -o $@ $<
-
-hdFloorWindow.o: hdImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdFloor \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdFloor \
-			$(INC) -o $@ $<
-
-hdCeilingWindow.o: hdImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdCeiling \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=hdCeiling \
-			$(INC) -o $@ $<
-
-
 fourkFrontWindow.o: fourkImmersiveWindow.cpp
 	@dtk-msgNotice -p Makefile compiling $<
 	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
@@ -170,50 +109,15 @@ fourkFrontWindow.o: fourkImmersiveWindow.cpp
 			-DSCR_NAME=fourkFront \
 			$(INC) -o $@ $<
 
-fourkBackWindow.o: fourkImmersiveWindow.cpp
+wsFrontWindow.o: wsImmersiveWindow.cpp
 	@dtk-msgNotice -p Makefile compiling $<
 	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkBack \
+			-DSCR_NAME=wsFront \
 			$(INC) -o $@ $<
 	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkBack \
+			-DSCR_NAME=wsFront \
 			$(INC) -o $@ $<
 
-fourkLeftWindow.o: fourkImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkLeft \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkLeft \
-			$(INC) -o $@ $<
-
-fourkRightWindow.o: fourkImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkRight \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkRight \
-			$(INC) -o $@ $<
-
-fourkFloorWindow.o: fourkImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkFloor \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkFloor \
-			$(INC) -o $@ $<
-
-fourkCeilingWindow.o: fourkImmersiveWindow.cpp
-	@dtk-msgNotice -p Makefile compiling $<
-	@dtk-msgNotice -p $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkCeiling \
-			$(INC) -o $@ $<
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
-			-DSCR_NAME=fourkCeiling \
-			$(INC) -o $@ $<
 
 
 raveFrontWindow.o: immersiveWindow.cpp
