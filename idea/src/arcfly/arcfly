@@ -323,7 +323,7 @@ then
     irisfly_files="$irisfly_files ${IRISFLY_WANDMOUSE:-$defaultWandMouse}"
     export IRISFLY_WANDMOUSE_DISPLAY=$DISPLAY
     echo "********* IRISFLY_WANDMOUSE_DISPLAY:" $IRISFLY_WANDMOUSE_DISPLAY
-    export IRISFLY_WANDMOUSE_WINDOW="Window"
+    export IRISFLY_WANDMOUSE_WINDOW="hdFrontWindow"
 fi
 
 # this is the window where we save the pointer

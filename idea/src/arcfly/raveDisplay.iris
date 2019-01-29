@@ -1,8 +1,6 @@
 # This really should be in arcDisplay.iris
 exec echo starting raveDisplay
-exec echo starting hdFrontWindow
-dso hdFrontWindow
-exec echo after loading  hdFrontWindow
+dso wsFrontWindow
 exec echo finished raveDisplay
 echo off
 

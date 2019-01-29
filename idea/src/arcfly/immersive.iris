@@ -2,13 +2,14 @@ WAIT echo __________ immersive.iris started _________
 
 WAIT echo __________ immersive.iris load nav dso _________
 # navigation
-dso wandJoystickZNav
-dso wandJoystickYNav
+dso nullNav
 dso wandJoystickNav
+dso wandJoystickXYZtranOnlyNav
+dso wandJoystickXYtranNav
+dso wandJoystickYNav
+dso wandJoystickZNav
 dso trackballNav
 
-WAIT echo __________ interocular.mcp interocular coltrol slider
-AFTER REALIZE LOAD interocular.mcp
 
 WAIT echo __________ immersive.iris  distance the probe is in front of the wand _________
 # distance the probe is in front of the wand
@@ -28,11 +29,10 @@ WAIT echo __________ immersive.iris stopsign_________
 # start stop sign
 #AFTER REALIZE EXEC hev-screenContactAlert
 
-# Force window below all othere
-AFTER REALIZE EXEC wmctrl -r hdFront -b add,below
-AFTER REALIZE EXEC wmctrl -r fourkFront -b add,below
-AFTER REALIZE EXEC wmctrl -r arcFront -b add,below
+# Force window below all others
+AFTER REALIZE EXEC wmctrl -r Front -b add,below
 
 
 
 WAIT echo __________ immersive.iris finished _________
+
