@@ -12,6 +12,10 @@ DSOS = \
 	\
 	hdFrontWindow.so 						\
 	\
+	gsoFrontWindow.so 						\
+	ARCFrontWindow.so 						\
+	UHDFrontWindow.so 						\
+	\
 	fourkFrontWindow.so 						\
 	wsFrontWindow.so 						\
 	\
@@ -109,6 +113,51 @@ fourkFrontWindow.o: fourkImmersiveWindow.cpp
 			-DSCR_NAME=fourkFront \
 			$(INC) -o $@ $<
 
+
+
+
+
+
+
+
+gsoFrontWindow.o: gsoImmersiveWindow.cpp
+	@dtk-msgNotice -p Makefile compiling $<
+	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=gsoFront \
+			-Dgso=1 \
+			$(INC) -o $@ $<
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-Dgso=1 \
+			-DSCR_NAME=gsoFront \
+			$(INC) -o $@ $<
+
+ARCFrontWindow.o: gsoImmersiveWindow.cpp
+	@dtk-msgNotice -p Makefile compiling $<
+	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=gsoFront \
+			-DARC=1 \
+			$(INC) -o $@ $<
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=gsoFront \
+			-DARC=1 \
+			$(INC) -o $@ $<
+
+UHDFrontWindow.o: gsoImmersiveWindow.cpp
+	@dtk-msgNotice -p Makefile compiling $<
+	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=gsoFront \
+			-DUHD=1 \
+			$(INC) -o $@ $<
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=gsoFront \
+			-DUHD=1 \
+			$(INC) -o $@ $<
+
+
+
+
+
+
 wsFrontWindow.o: wsImmersiveWindow.cpp
 	@dtk-msgNotice -p Makefile compiling $<
 	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
@@ -125,6 +174,9 @@ raveFrontWindow.o: immersiveWindow.cpp
 	@dtk-msgNotice -p Makefile $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
 			-DSCR_NAME=raveFront \
 			$(INC) -o $@ $<
+	@$(CXX) -E -c $(CPPFLAGS) $(CXXFLAGS) \
+			-DSCR_NAME=raveFront \
+			$(INC) > raveFrontWindow.out $<
 	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) \
 			-DSCR_NAME=raveFront \
 			$(INC) -o $@ $<

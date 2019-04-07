@@ -67,7 +67,7 @@ PUBLIC_DATA =
 
 # these are data files used by the project, private,
 # in $HEV_IDEA_DIR/etc/$(PROJECT)/data
-PRIVATE_DATA = 
+PRIVATE_DATA = ivexample
 
 # these are the man pages that get installed in $HEV_IDEA_DIR/man
 MAN_PAGES = ivutilities.3 \

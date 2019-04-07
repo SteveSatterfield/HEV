@@ -1,5 +1,0 @@
-wait echo __________ desktopDisplay.iris started __________
-dso desktopWindow
-wait echo __________ desktopDisplay.iris middle __________
-dso desktopWindowKeyboardControl
-wait echo __________ desktopDisplay.iris finished __________

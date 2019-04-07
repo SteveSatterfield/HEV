@@ -52,7 +52,26 @@ doit() {
 }
 
 ########################################################################
+#
 # "main"
+#
+########################################################################
+
+
+if [ -n "${HEV_NewWorkSpace}" ]
+then
+    export CURRENTWS=$(wmctrl -d | awk '/\*/{print $1;}')
+    wmctrl -s 1
+fi
+
+echo NWS $HEV_NewWorkSpace  $CURRENTWS
+
+# This a terrible work around to a problem that deep in some
+# corner of the software, DISPLAY must be set in form :X.Y
+# becuase :X doesn't work correctly.
+
+export MYDISPLAY=$(printf ":%-4.1f\n" ${DISPLAY//:})
+echo "DISPLAY=" $DISPLAY "MYDISPLAY=" $MYDISPLAY
 
 
 # Set default FSAA mode. List modes: nvidia-settings --query=fsaa --verbose
@@ -88,6 +107,7 @@ defaultDesktopDisplay="desktopDisplay.iris"
 # $IRISFLY_IMMERSIVE_DISPLAY will override
 defaultRaveDisplay="raveDisplay.iris"
 defaultPowerwallDisplay="powerwallDisplay.iris"
+defaultArc6Display="arc6Display.iris"
 # $IRISFLY_SIMULATOR_DISPLAY will override
 # make the rave the default simulator, since we can't automatically choose
 defaultSimulatorDisplay="simulatorDisplay.iris"
@@ -208,7 +228,9 @@ then if [ -n "$IRISFLY_IMMERSIVE_DISPLAY" ]
 	  then irisfly_files="$irisfly_files $defaultRaveDisplay"
 	  elif [ "$immersive" = "powerwall" ]
 	  then irisfly_files="$irisfly_files $defaultPowerwallDisplay"
-	  else dtk-msgError irisfly: no default immersive environment on a desktop- email what you did to get this mesage to kelso@nist.gov
+	  elif [ "$immersive" = "arc6" ]
+	  then irisfly_files="$irisfly_files $defaultArc6Display"
+	  else dtk-msgError irisfly: no default immersive environment on a desktop- immersive is $immersive
 	  fi
      fi
 fi
@@ -227,8 +249,15 @@ then irisfly_files="$irisfly_files trackerMonitor.iris"
 fi
 
 # this is the window that wandMouse uses, so put your GUIs on this screen
-export IRISFLY_WANDMOUSE_WINDOW="raveFrontWindow"
-export IRISFLY_WANDMOUSE_DISPLAY=`iris-DISPLAYfromWindow $IRISFLY_WANDMOUSE_WINDOW`
+echo HERE HERE immersive is $immersive
+if [ "$immersive" == "arc6" ]
+then
+    export IRISFLY_WANDMOUSE_WINDOW="Front"
+    export IRISFLY_WANDMOUSE_DISPLAY=$MYDISPLAY
+else
+    export IRISFLY_WANDMOUSE_WINDOW="raveFrontWibdow"
+    export IRISFLY_WANDMOUSE_DISPLAY=`iris-DISPLAYfromWindow $IRISFLY_WANDMOUSE_WINDOW`
+fi
 
 # if immersive turn on wandMouse unless told otherwise
 if [ "$env" == "immersive" -a -z "$noWandMouse" ]
@@ -317,7 +346,8 @@ cat /dev/null> $IRISFLY_HIDE_SHOW_WINDOWS
 
 # do this when you exit
 if [ -n "$IRISFLY_EXIT_COMMANDS" ]
-then trap "doit $IRISFLY_EXIT_COMMANDS" EXIT
+then trap "doit $IRISFLY_EXIT_COMMANDS; echo cws $CURRENTWS; wmctrl -s $CURRENTWS" EXIT
+else trap "                             echo cws $CURRENTWS; wmctrl -s $CURRENTWS" EXIT
 fi
 
 # do pre iris-viewer commands
@@ -329,8 +359,10 @@ fi
 export PATH="$HEV_IDEA_DIR/etc/irisfly/bin:$PATH"
 
 # display is set so new GUIs will appear on the correct screen
-command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $NCAT_FILES $viewerStuff"
+echo IRISFLY_WANDMOUSE_WINDOW $IRISFLY_WANDMOUSE_WINDOW
+command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
 dtk-msgInfo irisfly: $command
+echo "----------------->" $command
 $command
 
 # do post iris-viewer commands

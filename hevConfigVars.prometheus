@@ -1,0 +1,4 @@
+export HEV_DISPLAY_TYPE=""
+export HEV_identifyImmersive_OUTPUT=desktop
+export HEV_testImmersive_OUTPUT=DESKTOP
+export HEV_NewWorkSpace=yes

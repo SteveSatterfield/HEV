@@ -1,4 +1,29 @@
 #! /bin/bash
+
+
+if [ -n "${HEV_testImmersive_OUTPUT}" ]
+then
+    if [ "$1" == "-v" ]
+    then
+	echo ${HEV_testImmersive_OUTPUT}
+    fi
+    case  ${HEV_testImmersive_OUTPUT} in
+	IMMERSIVE)
+	    exit 0
+	    ;;
+	*)
+	    exit 1
+	    ;;
+    esac
+else
+    echo HEV_identify_OUTPUT Not Defined
+    exit 2
+fi
+
+
+exit
+############################## Delete this later
+
 #
 # hev-testImmersive - Test if executing on an immersive or desktop machine
 #

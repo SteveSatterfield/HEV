@@ -1,0 +1,8 @@
+# Use with gso 20.5 inches/unit
+# 1/20.5 => .04878048780487804878
+
+DCS  world_inches 0 0 0  0 0 0  .04878048780487804878
+ADDCHILD world_inches world
+
+# Add childern defined in inches to world_inches node
+# Add childern defined in CAVE units to world

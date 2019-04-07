@@ -1,0 +1,88 @@
+#! /bin/bash
+
+################################################################
+# Ensure this script is properly executed.
+if [ "${BASH_SOURCE[0]}" == "${0}" ]
+then
+    echo "You must use: source ${BASH_SOURCE[0]} [altConfigVars]"
+    exit 1
+fi
+################################################################
+#
+# Configure file order: Last found is the winnder
+#
+CONFIG_FILE_LIST="\
+		./hevConfigVars.default \
+	        ./hevConfigVars.$(hostname -s) \
+		$HOME/.hevConfigVars \
+		$1 \
+"
+
+CONFIGFILE=""
+for cf in $CONFIG_FILE_LIST
+do
+    echo Checking $cf
+    if [ -f "$cf" ]
+    then
+	CONFIGFILE=$cf
+	echo setting $cf
+    fi
+done
+
+echo $CONFIGFILE
+if [ -f $CONFIGFILE ]
+then
+    echo "Using HEV Config File: " $CONFIGFILE
+    source $CONFIGFILE
+    export HEV_CONFIGFILE=$CONFIGFILE
+else
+cat <<EOF
+
+Error: HEV User Config File Not Found    
+Usage: source ./configHEV [altConfigFile]
+
+The config file is searched in the order:
+						
+		./hevConFigVars.default
+	        ./hevConFigVars.HOSTNAME
+		$HOME/.hevConFigVars
+		comandline parameter
+
+The following variables should be set to one of the listed values and exported.
+
+
+Variable: HEV_DISPLAY_TYPE
+Values: ARC6, arc6, UHD, FHD
+Purpose: Specfiy the display type for wsDisplayWindow.so
+
+  Use       When                             Stereo
+ ----      ----                              ------
+  ARC6      running on NC A&T ARC6            yes
+  arc6      debugging with a 4K UHD TV        yes
+  UHD       running on a 4K UHD TV            no
+  FHD       running on a FuLL HD Monitor      no
+
+Otherwise leave it undefined for typcial non-stereo monitor
+
+Variable: HEV_identifyImmersive_OUTPUT
+Values: desktop, rave, powerwall, arc6
+Purpose: Specify for irisfly what device being used.
+
+Variable: HEV_testImmersive_OUTPUT
+Values: DESKTOP, IMMERSIVE
+Purpose: Specify for irisfly if the devise  is Mono Desktop or Stereo Iersive
+
+EOF
+
+exit
+fi
+
+
+#
+# Configure HEV
+#
+unset DTK_SHAREDMEM_DIR;
+export HEVROOT=$(pwd)
+source $HEVROOT/profile iris
+
+# Done

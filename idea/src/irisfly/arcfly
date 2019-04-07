@@ -56,23 +56,26 @@ doit() {
 
 ##############
 #            #
-
 #    Main    #
 #            #
 ##############
 
 echo "********** arcfly started"
 
-# Normal operation, Arc Host name is hard coded here,
-# unless -h is the first (un-documnted) parameter given on command line.
+# H is actual host name
+# ARC_HOSTNANE is the Arc system host name or the hostname
+#     pretending to be the Arc (typicaly for debugging else where).
+#     If ARC_HOSTNAME is in the environment, use it.
+#     If not, then hard code it here .
+#
+H=$(hostname -s)
+#echo "ARC_HOSTNAME:"  ${ARC_HOSTNAME}
 
-if [ "$1" == "-h" ]
+if [ -z ${ARC_HOSTNAME} ]
 then
-    export ARC_HOSTNAME=$(hostname -s)
-    shift
-    dtk-msgWarning arctfly: Pretending $ARC_HOSTNAME is an Arc system
-else
     export ARC_HOSTNAME="ncatpc2"
+else
+    dtk-msgWarning arctfly: Pretending $ARC_HOSTNAME is the Arc system
 fi
 
 
@@ -81,22 +84,15 @@ fi
 # becuase :0 doesn't work correctly. I really should fix the
 # actual problem.
 
-case $DISPLAY in
-    :0|:0.)
-	export DISPLAY=:0.0
-	;;
-    :1|:1.)
-	export DISPLAY=:1.0
-	;;
-    *)
-	echo   "Oops, I really should handle more cases, complain to steve@nist.gov"
-	exit
-esac;
+echo "********** DISPLAY:" $DISPLAY
+
+export DISPLAY=$(printf ":%-4.1f\n" ${d//:})
 
 echo "********** DISPLAY:" $DISPLAY
 
 
 # Set default FSAA mode. List modes: nvidia-settings --query=fsaa --verbose
+echo "********** set __GL_FSAA_MODE to either: 11 for GeForce or 14 for Quadro"
 if [ -z "$__GL_FSAA_MODE" ]
 then
     hev-glinfo | grep GeForce > /dev/null
@@ -104,20 +100,23 @@ then
     then
 	export __GL_FSAA_MODE=11   # GeForce series
     else
-	export __GL_FSAA_MODE=14   # Quardo series
+	export __GL_FSAA_MODE=14   # Quadro series
     fi
 fi
-
-
-dataDir=$HEV_IDEA_DIR/etc/arcfly/data
+echo "********** __GL_FSAA_MODE:" $__GL_FSAA_MODE
 
 # where to find the files
+dataDir=$HEV_IDEA_DIR/etc/arcfly/data
+echo "********** dataDir:" $dataDir
+
 # arcfly only adds OSG loadable files, it doesn't add any of its own DSOs
 setOrAppend OSG_FILE_PATH "${dataDir}"
 export OSG_FILE_PATH
+echo "********** OSG_FILE_PATH:" $OSG_FILE_PATH
 
 setOrAppend MCP_FILE_PATH "${dataDir}"
 export MCP_FILE_PATH
+echo "********** MCP_FILE_PATH:" $MC_FILE_PATH
 
 # set an envvar for the default interocular distance if not already
 # set. This is used by common.iris and interocular.sh
@@ -127,8 +126,7 @@ export MCP_FILE_PATH
 
 defaultDesktopDisplay="desktopDisplay.iris"       # $IRISFLY_DESKTOP_DISPLAY will override
 
-defaultPowerwallDisplay="powerwallDisplay.iris"   # $IRISFLY_IMMERSIVE_DISPLAY will override
-
+defaultRaveDisplay="arc6Display.iris"   # $IRISFLY_IMMERSIVE_DISPLAY will override
 
 defaultSimulatorDisplay="simulatorDisplay.iris"   # $IRISFLY_SIMULATOR_DISPLAY will override
                                                   # make the rave the default simulator,
@@ -163,6 +161,12 @@ defaultImmersiveMCP="immersive.mcp"               # $IRISFLY_IMMERSIVE_MCP will 
 defaultSimulatorMCP="simulator.mcp"               # $IRISFLY_SIMULATOR_MCP will override
 
 
+# If really running on Arc, then we're "immersive", "everybody" else is desktop
+if ( [ "$H" == "$ARC_HOSTNAME" ] )
+   then env="immersive"
+   else env="desktop"
+fi
+
 # parse arguments
 while [ -n "$*" ]
 do
@@ -191,68 +195,32 @@ do
     shift
 done
 
-# $env and $IRISFLY_ENV will be set to desktop, simulator or immersive
 
-echo "********** H:" $H "ARC_HOSTNAME: " $ARC_HOSTNAME
-echo "********** env:" $env
-
-H=$(hostname -s)
-if ( [ "$H" == "$ARC_HOSTNAME" ]  && [ "$env" == "simulator" ] )
-then dtk-msgWarning arcfly: running the simulator on an immersive console. Tracked devices will be used.
-fi
-
-# set env if not specified
-if [ -z "$env" ]
-then if ( [ "$H" == "$ARC_HOSTNAME" ] )      # hard coded to Arc here
-     then env=immersive
-     else env=desktop
-     fi
-fi
-
-
-dtk-msgInfo arcfly: $env environment
-
-echo '***********  env:' $env
-
-# if we're immersive see what kind
-# That's the way the origincal irisfly worked, but here,  if we're immersive,  then
-# we're on the Arc. So hard code appropriately.
+# At this point env is "desktop", "immersive" or "simulator".
+#
+# By definition, desktop is "mono" (no stereo), typically laptop or desktop.
+#                immersvie is "stereo" and head tracking on Arc
+#                simulator is "desktop" with the added simulator capabilities added
 #
 
+echo "********** At this point env is desktop, immersive or simulator."
+echo "********** env" $env
+dtk-msgInfo arcfly: $env: environment
 
-immersive="powerwall"
-export IRIS_DISPLAY_NAME=$DISPLAY   #set IRIS_DISPLAY_NAME so desktopDisplay will in the right place
-dtk-msgInfo irisfly: immersive system is $immersive
+export IRIS_DISPLAY_NAME=$DISPLAY   #set IRIS_DISPLAY_NAME so desktopDisplay will be in the right place
+echo "**********  IRIS_DISPLAY_NAME:" $IRIS_DISPLAY_NAME "DISPLAY:" $DISPLAY
 
-echo '***********  immersive:' $immersive
-echo "***********  IRIS_DISPLAY_NAME:" $IRIS_DISPLAY_NAME "DISPLAY:" $DISPLAY
 
-if [ "$env" == "desktop" ] 
-then export IRISFLY_DESKTOP_ENV=1
-elif [ "$env" == "simulator" ]
-then export IRISFLY_SIMULATOR_ENV=1
-elif [ "$env" == "immersive" ]
-then export IRISFLY_IMMERSIVE_ENV=$immersive
-else dtk-msgError irisfly: unknown value of \$env- email what you did to get this mesage to steve@nist.gov
-fi
-
-export IRISFLY_ENV=$env
-
-echo "********** IRISFLY_ENV:" $IRISFLY_ENV
-echo "********** IRISFLY_IMMERSIVE_ENV:" $IRISFLY_IMMERSIVE_ENV
-
-# $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS will be set to this if not already set
 if [ "$env" == "immersive" ]
 then if [ -z "$IRISFLY_MCP_X11_IMMERSIVE_OPTIONS" ]
-     then IRISFLY_MCP_X11_IMMERSIVE_OPTIONS='-geometry +512+0'
+     then IRISFLY_MCP_X11_IMMERSIVE_OPTIONS='-geometry +470+0'
 	  export IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
      fi
-# $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS will be ignored if not immersive
 else unset IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
 fi
 
-echo "***********  IRISFLY_MCP_X11_IMMERSIVE_OPTIONS:" $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
-echo '***********  env: ' $env
+echo "********** IRISFLY_MCP_X11_IMMERSIVE_OPTIONS:" $IRISFLY_MCP_X11_IMMERSIVE_OPTIONS
+echo '********** env: ' $env
 
 
 ######################################################
@@ -263,50 +231,38 @@ echo '***********  env: ' $env
 #                                                    #
 ######################################################
 
+# at this point:
+#
+#    env=simulator  means run simlator in desktop mode where ever you are
+#
+#    env=desktop    means you are not on Arc so run as desktop
+#
+#    env=immersive  means you are on the Arc so run in immersive mode
+
 #
 # First: load display files
 #
 
+echo "********** seting up irisfly_files (current contents should be empty):" $irisfly_files
 
-# always load a desktop
-irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
-
-# Now add one of the following combinations
-#
-#  1) desktop
-#
-#  2) desktop and simulator
-#
-#  3) desktop and rave (NIST CAVE)
-#
-#  4) powerwall (NCAT Arc)
-#
-
-echo "********** seting up irisfly_files (cuurent contents):" $irisfly_files
-if [ "$env" == "simulator" ]
-then
-    irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
-    irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR_DISPLAY:-$defaultSimulatorDisplay}"
-elif [ "$env" == "immersive" ]
-then
-    if [ -n "$IRISFLY_IMMERSIVE_DISPLAY" ]
-    then
+case $env in
+    simulator)
 	irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
-	irisfly_files="$irisfly_files $IRISFLY_IMMERSIVE_DISPLAY"
-    else
-	if [ "$immersive" = "rave" ]
-	then
-	    irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
-	    irisfly_files="$irisfly_files $defaultRaveDisplay"
-	elif [ "$immersive" = "powerwall" ]
-	then
-	    irisfly_files="$irisfly_files $defaultPowerwallDisplay"
-	else
-	    dtk-msgError irisfly: no default immersive environment on a desktop- email what you did to get this mesage to steve@nist.gov
-	fi
-    fi
-fi
-echo "display files are set, irisfly_files-" $irisfly_files
+	irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR_DISPLAY:-$defaultSimulatorDisplay}"
+	;;
+    immersive)
+	irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
+	irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE_DISPLAY:-$defaultRaveDisplay}"
+	;;
+    desktop)
+	irisfly_files=${IRISFLY_DESKTOP_DISPLAY:-$defaultDesktopDisplay}
+	;;
+    *)
+	dtk-msgError arcfly: env is set to $env, this shouldn\'t happen, email what you did to get this mesage to steve@nist.gov
+	;;
+
+esac
+
 
 
 #
@@ -314,65 +270,50 @@ echo "display files are set, irisfly_files-" $irisfly_files
 #
 
 # for debugging
-#irisfly_files="$irisfly_files NULL"
+irisfly_files="$irisfly_files NULL"
 
 
-echo "set up action files, irisfly_files-" $irisfly_files
-
+echo "********** irisfly_files:" $irisfly_files
 
 irisfly_files="$irisfly_files ${IRISFLY_COMMON:-$defaultCommon}"
-echo "add common files, irisfly_files-" $irisfly_files
-echo "env=" $env
+echo "********** add common files, irisfly_files:" $irisfly_files
 
-echo "RESUME HERE"
 
-if [ "$env" == "simulator" ]
-then
-    irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR:-$defaultSimulator}"
-elif [ "$env" == "immersive" ]
-then
-    echo yep
-    irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE:-$defaultImmersive}"
-else
-    irisfly_files="$irisfly_files ${IRISFLY_DESKTOP:-$defaultDesktop}"
-fi
+echo "********** env:" $env
+case $env in
+    simulator)
+	irisfly_files="$irisfly_files ${IRISFLY_SIMULATOR:-$defaultSimulator}"
+	;;
+    immersive)
+	irisfly_files="$irisfly_files ${IRISFLY_IMMERSIVE:-$defaultImmersive}"
+	;;
+    desktop)
+	irisfly_files="$irisfly_files ${IRISFLY_DESKTOP:-$defaultDesktop}"
+	;;
+    *)
+	dtk-msgError arkfly: env is set to $env, this shouldn\'t happen, email what you did to get this mesage to steve@nist.gov, proceeding as desktop.
+	irisfly_files="$irisfly_files ${IRISFLY_DESKTOP:-$defaultDesktop}"
+	;;
 
-echo after 3 irisfly_files $irisfly_files
+esac
+
+
+echo  "**********" tracker monitoring section
 # for tracker monitoring
 if [ -n "$trackerMonitor" ]
-then irisfly_files="$irisfly_files trackerMonitor.iris"
+then
+    irisfly_files="$irisfly_files trackerMonitor.iris"
 fi
 
-echo after 4 irisfly_files $irisfly_files
 
-echo "start area of interest"
-echo "immersive = " $immersive
-# if immersive turn on wandMouse unless told otherwise
+echo "********** wandmouse"
 if [ "$env" == "immersive" -a -z "$noWandMouse" ]
 then 
-    # this is the window that wandMouse uses, so put your GUIs on this screen
-    if [ "$immersive" == "rave" ]
-    then
-	export IRISFLY_WANDMOUSE_WINDOW="raveFrontWindow"
-    elif [ "$immersive" == "powerwall" ]
-    then
-	export IRISFLY_WANDMOUSE_WINDOW="powerwallWindow"
-    else
-	dtk-msgError irisfly: immersive is set to \"desktop\" and wand mouse is on, - email what you did to get this mesage to steve@nist.gov
-    fi
-
-    echo AAAA
-    export DTK_SPEW_LEVEL=INFO
-    export IRISFLY_WANDMOUSE_DISPLAY=`iris-DISPLAYfromWindow $IRISFLY_WANDMOUSE_WINDOW`
-    echo BBBB
-    export DTK_SPEW_LEVEL=ERROR
     irisfly_files="$irisfly_files ${IRISFLY_WANDMOUSE:-$defaultWandMouse}"
-    echo CCCC
-    
-    echo "immersive: $immersive   IRISFLY_WANDMOUSE_WINDOW: $IRISFLY_WANDMOUSE_WINDOW    IRISFLY_WANDMOUSE_DISPLAY: $IRISFLY_WANDMOUSE_DISPLAY"
-
+    export IRISFLY_WANDMOUSE_DISPLAY=$DISPLAY
+    echo "********* IRISFLY_WANDMOUSE_DISPLAY:" $IRISFLY_WANDMOUSE_DISPLAY
+    export IRISFLY_WANDMOUSE_WINDOW="hdFrontWindow"
 fi
-echo "finish area of interest"
 
 # this is the window where we save the pointer
 export IRIS_SAVE_RESTORE_POINTER="$DISPLAY"
@@ -382,19 +323,21 @@ if [ -n "$mono" ]
 then irisfly_files="$irisfly_files ${IRISFLY_MONO:-$defaultMono}"
 fi
 
-dtk-msgInfo irisfly: irisfly files: $irisfly_files
+dtk-msgInfo  arcfly: $irisfly_files   files: $irisfly_files
 
 # load MCP files
+echo "*********" load MCP files
 IRISFLY_MCP_FILES=${IRISFLY_COMMON_MCP:-$defaultCommonMCP}
 
 [ -n "$IRISFLY_LAST_MCP" ] && IRISFLY_MCP_FILES="$IRISFLY_MCP_FILES $IRISFLY_LAST_MCP"
 
 # this ennvar is either the name of the mcp file that allows interocular to
-# be changed or is /dev/null so no button gets created. Yeajh, it's a hack
+# be changed or is /dev/null so no button gets created. Yeah, it's a hack
 if [ "$env" == "immersive" -a -z "$mono" ]
 then export IRISFLY_INTEROCULAR_MCP_FILE=interocular.mcp
 else export IRISFLY_INTEROCULAR_MCP_FILE=/dev/null
 fi
+echo "********* IRISFLY_INTEROCULAR_MCP_FILE: " $IRISFLY_INTEROCULAR_MCP_FILE
 
 if [ -z "$IRISFLY_DISPLAY_MCP" ]
 then if [ "$env" == "desktop" ] 
@@ -406,19 +349,21 @@ then if [ "$env" == "desktop" ]
     else dtk-msgError irisfly: unknown value of \$env- email what you did to get this mesage to kelso@nist.gov
     fi
 fi
+echo "********* IRISFLY_DISPLAY_MCP: " $IRISFLY_DISPLAY_MCP
 
 # turn on logging button if requested
 [ -n "$log" ] && IRISFLY_MCP_FILES="$IRISFLY_MCP_FILES log.mcp"
 
 # and tell MCP what they are
 export IRISFLY_MCP_FILES
-dtk-msgInfo irisfly: IRISFLY_MCP_FILES = $IRISFLY_MCP_FILES
+echo "**********  IRISFLY_MCP_FILES:" $IRISFLY_MCP_FILES
 
 # this is the window MCP uses
 if [ "$env" == "immersive" ]
 then export IRISFLY_MCP_DISPLAY=$IRISFLY_WANDMOUSE_DISPLAY
 else export IRISFLY_MCP_DISPLAY=$DISPLAY
 fi
+echo "********** IRISFLY_MCP_DISPLAY:" $IRISFLY_MCP_DISPLAY
 
 # this is the fifo that mcp will read from
 if [ -z "$IRISFLY_MCP_CONTROL_FIFO" ]
@@ -457,6 +402,12 @@ cat /dev/null> $IRISFLY_HIDE_SHOW_WINDOWS
 if [ -n "$IRISFLY_EXIT_COMMANDS" ]
 then trap "doit $IRISFLY_EXIT_COMMANDS" EXIT
 fi
+# I know this is ugly -sgs
+#if [ -n "$IRISFLY_EXIT_COMMANDS" ]
+#then trap "pkill -9 iris-wandMouse; doit $IRISFLY_EXIT_COMMANDS" EXIT
+#else trap "pkill -9 iris-wandMouse" EXIT
+#fi
+
 
 # do pre iris-viewer commands
 if [ -n "$IRISFLY_PRE_VIEWER_COMMANDS" ]
@@ -468,22 +419,31 @@ export PATH="$HEV_IDEA_DIR/etc/irisfly/bin:$PATH"
 
 # display is set so new GUIs will appear on the correct screen
 command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
+
+echo "********* DISPLAY:" $DISPLAY
+echo "********* irisfly_files:" $irisfly_files
+echo "********* viewerStuff: " $viewerStuff
+echo
+
 dtk-msgInfo irisfly: $command
-#$command
-
-echo "DISPLAY:" $DISPLAY
-echo "irisfly_files:" $irisfly_files
-echo "viewerStuff: " $viewerStuff
-echo "Modified:"
-DISPLAY=":1.0"
-irisfly_files=" desktopDisplay.iris powerwallDisplay.iris common.iris wandMouse.iris"
-echo "DISPLAY:" $DISPLAY
-echo "irisfly_files:" $irisfly_files
-echo "viewerStuff: " $viewerStuff
-
-command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
-echo $comand: $command
+echo
+echo "********* RUN THIS COMMAND: " $command
+echo
 $command
+
+echo
+echo "********* BACK FROM THAT COMMAND"
+
+
+#echo "Modified:"
+#DISPLAY=":1.0"
+#irisfly_files=" desktopDisplay.iris powerwallDisplay.iris common.iris wandMouse.iris"
+#echo "DISPLAY:" $DISPLAY
+#echo "irisfly_files:" $irisfly_files
+#echo "viewerStuff: " $viewerStuff
+#command="env DISPLAY=$IRISFLY_MCP_DISPLAY iris-viewer $irisfly_files $viewerStuff"
+#echo $comand: $command
+#$command
 
 
 # do post iris-viewer commands

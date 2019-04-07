@@ -1,3 +1,80 @@
+
+// Display type specified in the environment variable HEV_DISPLAY_TYPE
+//
+//  Value                            Use
+//  -----                            ----
+//
+//  ARC                               when running at NC A&T
+//
+//  gso                               when debugging with a 4K UHD TV
+//
+//  UHD                               when running on a 4K UHD TV
+
+
+
+
+
+#if defined(ARC)
+
+#define gso_screenSize_X 11520         // 6*1920
+#define gso_screenSize_Y 4320          // 4*1080
+
+#define gso_screen_X    0
+#define gso_screen_Y    0
+
+#define gso_screenInches_X 211.22      // physical size of ARC in inches
+#define gso_screenInches_Y 90.5
+
+#define gso_OneUnitInches 105.61       // 1 CAVE unit, aka HEV unit, aka RAVE unit, aka unit, in inches: 211.22/2
+
+
+
+
+#elif defined(gso)
+
+#define gso_screenSize_X 3840          // ARC6 scaled by 1/3 to fit 4K UHD TV: 11520/3
+#define gso_screenSize_Y 1440          //                                      4320/3
+
+#define gso_screen_X    0
+#define gso_screen_Y    0
+
+#define gso_screenInches_X 36.         // Physical size of 40" 4K UHD TV
+#define gso_screenInches_Y 20.5
+
+#define gso_OneUnitInches 18.0         // 36/2
+
+
+
+
+#else   // UHD
+
+#define gso_screenSize_X 3840           // 2*1920
+#define gso_screenSize_Y 2160           // 2*1080
+
+#define gso_screen_X    0
+#define gso_screen_Y    0
+
+#define gso_screenInches_X 36.
+#define gso_screenInches_Y 20.5
+
+#define gso_OneUnitInches 18.0
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #include <dtk.h>
 #include <dtk/dtkDSO_loader.h>
 
@@ -6,8 +83,8 @@
 #include <iris/Utils.h>
 
 /*
-    This code is intended to serve for the display DSO's for the RAVE
-    front, back, left, right, floor, ceiling and powerwall in both the
+    This code is intended to serve for the display DSO's for the GSO
+    front, back, left, right, floor, ceiling and pwrwall in both the
     actual immersive enviornments and for the simulator.
 
     The DSO's produded by this code are invoked by programs such
@@ -16,12 +93,12 @@
 
     The preprocessor symbol SCR_NAME must be defined as one of the
     following:
-                raveFront, raveBack,
-                raveLeft,  raveRight,
-                raveFloor, raveCeiling
+                gsoFront, gsoBack,
+                gsoLeft,  gsoRight,
+                gsoFloor, gsoCeiling
 
              or 
-                powerwall.
+                pwrwall.
 
     The preprocessor symbol SIM should be defined only if you want to
     compile the simulator DSOs
@@ -39,7 +116,7 @@
     You should never specify CUBE and SIM at the same time.
 
     The simulator DSOs are intended to provide desktop windows that 
-    correspond to the CAVE (RAVE) device. These windows are at a lower
+    correspond to the CAVE (GSO) device. These windows are at a lower
     resolution than the CAVE displays so that they can all be displayed
     without overlap on the desktop. Even though the CAVE currently 
     has only three screens, we provide six DSO which include the three
@@ -53,30 +130,30 @@
 
 
     This code can produce DSO's with these names:
-        raveFrontWindow      raveBackWindow
-        raveLeftWindow       raveRightWindow
-        raveFloorWindow      raveCeilingWindow
+        gsoFrontWindow      gsoBackWindow
+        gsoLeftWindow       gsoRightWindow
+        gsoFloorWindow      gsoCeilingWindow
 
-        powerwallWindow
+        pwrwallWindow
 
-        raveFrontSimWindow   raveBackSimWindow
-        raveLeftSimWindow    raveRightSimWindow
-        raveFloorSimWindow   raveCeilingSimWIndow
+        gsoFrontSimWindow   gsoBackSimWindow
+        gsoLeftSimWindow    gsoRightSimWindow
+        gsoFloorSimWindow   gsoCeilingSimWIndow
 
-        powerwallSimWindow
+        pwrwallSimWindow
 
 
-        raveFrontCubeWindow      raveBackCubeWindow
-        raveLeftCubeWindow       raveRightCubeWindow
-        raveFloorCubeWindow      raveCeilingCubeWindow
+        gsoFrontCubeWindow      gsoBackCubeWindow
+        gsoLeftCubeWindow       gsoRightCubeWindow
+        gsoFloorCubeWindow      gsoCeilingCubeWindow
 
-        raveFrontCubeOffscreenWindow      raveBackCubeOffscreenWindow
-        raveLeftCubeOffscreenWindow       raveRightCubeOffscreenWindow
-        raveFloorCubeOffscreenWindow      raveCeilingCubeOffscreenWindow
+        gsoFrontCubeOffscreenWindow      gsoBackCubeOffscreenWindow
+        gsoLeftCubeOffscreenWindow       gsoRightCubeOffscreenWindow
+        gsoFloorCubeOffscreenWindow      gsoCeilingCubeOffscreenWindow
 
-        raveFrontCubeOverlapWindow      raveBackCubeOverlapWindow
-        raveLeftCubeOverlapWindow       raveRightCubeOverlapWindow
-        raveFloorCubeOverlapWindow      raveCeilingCubeOverlapWindow
+        gsoFrontCubeOverlapWindow      gsoBackCubeOverlapWindow
+        gsoLeftCubeOverlapWindow       gsoRightCubeOverlapWindow
+        gsoFloorCubeOverlapWindow      gsoCeilingCubeOverlapWindow
 
 
 
@@ -88,15 +165,15 @@
     them were each coded separately. I've tried to simplify the parameters
     that need to be changed, but this complicates the rest of the code.
 
-    The term "RAVE coordinates" and "display coordinates" are both
+    The term "GSO coordinates" and "display coordinates" are both
     used below. These two terms are synonymous. (This is the
     coordinate system that was called dpf coordinates when it was
     based on SGI Performer.)
 
-    Assumptions for RAVE displays:
+    Assumptions for GSO displays:
 
         - All DISPLAY sizes for the real CAVE screens are identical 
-            in pixels (for example 1600x1200), even if a smaller 
+            in pixels (for example 3840x2160), even if a smaller 
             area is actually used for the physical displays. 
             This assumption would be easy to change.
 
@@ -119,18 +196,18 @@
                 - the lower right corner of the left viewport
                 - the upper right corner of the floor viewport
 
-        - One unit in RAVE coordinate is 48 inches.
+        - One unit in GSO coordinate is 48 inches.
 
-        - The RAVE coordinate system is aligned with the physical
+        - The GSO coordinate system is aligned with the physical
             screens as follows:
-                - The front wall is perpendicular to RAVE Y
-                - The left wall is perpendicular to RAVE X
-                - The floor is perpendicular to RAVE Z
+                - The front wall is perpendicular to GSO Y
+                - The left wall is perpendicular to GSO X
+                - The floor is perpendicular to GSO Z
 
-        - The RAVE coord origin is aligned such that the corner
+        - The GSO coord origin is aligned such that the corner
                 where the screens converge is at (-1, 1, -1).
 
-                ALTERNATIVE: The RAVE origin is aligned with 
+                ALTERNATIVE: The GSO origin is aligned with 
                     the center of the front wall and the
                     horizontal center of the left wall.
 
@@ -188,8 +265,8 @@ printBacktrace (void)
 // This might be overkill, but it's not really not too bad.
 //
 // We require that the symbol SCR_NAME has been defined as one of the
-// following:  raveFront, raveBack,  raveLeft, raveRight
-//             raveFloor, raveCeiling, or powerwall.
+// following:  gsoFront, gsoBack,  gsoLeft, gsoRight
+//             gsoFloor, gsoCeiling, or pwrwall.
 //
 
 // We define inner versions of these so that symbol substitution is done.
@@ -204,15 +281,18 @@ printBacktrace (void)
 
 // Define cpp symbols for the valid SCR_NAME_SNs.  
 // Because of how these are used, they must be the screen number plus 100.
-#define raveFront_SN   (101)
-#define raveLeft_SN    (102)
-#define raveFloor_SN   (103)
+#define gsoFront_SN   (101)
+#define gsoLeft_SN    (102)
+#define gsoFloor_SN   (103)
 
-#define raveBack_SN    (104)
-#define raveRight_SN   (105)
-#define raveCeiling_SN (106)
+#define gsoBack_SN    (104)
+#define gsoRight_SN   (105)
+#define gsoCeiling_SN (106)
 
-#define powerwall_SN    (101)
+#define pwrwall_SN    (101)
+
+#define ARCFront_SN   (101)
+#define UHDFront_SN   (101)
 
 // The screen number used by OSG
 #define SCR_NUM (SCR_NAME_SN-100)
@@ -220,7 +300,7 @@ printBacktrace (void)
 // NOTE: The screen numbers correspond to the display names:
 //              :0.0 :0.1 :0.2 :0.3
 //       This is why the windows created here appear on the
-//       correct RAVE screen. At least that is my understanding.
+//       correct GSO screen. At least that is my understanding.
 
 
 // Test the validity of SCR_NAME
@@ -248,7 +328,7 @@ printBacktrace (void)
 
 // These defines create variable names corresponding to the
 // specified screen name. 
-// (E.g. raveFrontVp versus raveLeftVp versus ... )
+// (E.g. gsoFrontVp versus gsoLeftVp versus ... )
 #ifdef CUBE
     #ifdef OVERLAP
          #define VP              CONCAT ( SCR_NAME , CubeOverlapVp )
@@ -267,7 +347,7 @@ printBacktrace (void)
 
 
 #define ORIENTATION     CONCAT ( SCR_NAME , Orientation )
-#define PIX_PER_RAVE    CONCAT ( SCR_NAME , PixelPerRaveUnit)
+#define PIX_PER_GSO    CONCAT ( SCR_NAME , PixelPerGsoUnit)
 #define SIM_WIN_OFFSET  CONCAT ( SCR_NAME , SimWinOffset)
 
 
@@ -318,83 +398,83 @@ namespace CLASS_NAME
 
     // The pixel dimensions of the full screen. 
     // ASSUMPTION: All screens are the same.
-    int fullDisplayPixelDim[2] = {1600, 1200};
+    int fullDisplayPixelDim[2] = {gso_screenSize_X, gso_screenSize_Y};
 
 
     // Viewports: x, y, w, h
-    int raveFrontVp[4] =   {0, 0, 1600, 1200};
-    int raveLeftVp[4] =    {0, 0, 1600, 1200};
-    int raveFloorVp[4] =   {0, 0, 1600, 1200};
-    int raveBackVp[4] =    {0, 0, 1600, 1200};
-    int raveRightVp[4] =   {0, 0, 1600, 1200};
-    int raveCeilingVp[4] = {0, 0, 1600, 1200};
+    int gsoFrontVp[4] =   {gso_screen_X, gso_screen_Y, gso_screenSize_X, gso_screenSize_Y};
+    int gsoLeftVp[4] =    {0, 0, gso_screenSize_X, gso_screenSize_Y};
+    int gsoFloorVp[4] =   {0, 0, gso_screenSize_X, gso_screenSize_Y};
+    int gsoBackVp[4] =    {0, 0, gso_screenSize_X, gso_screenSize_Y};
+    int gsoRightVp[4] =   {0, 0, gso_screenSize_X, gso_screenSize_Y};
+    int gsoCeilingVp[4] = {0, 0, gso_screenSize_X, gso_screenSize_Y};
 
-    int powerwallVp[4] =   {0, 0, 1600, 1200};
+    int pwrwallVp[4] =   {0, 0, gso_screenSize_X, gso_screenSize_Y};
 
-    int raveFrontCubeVp[4] =   {0, 0, 512, 512};
-    int raveLeftCubeVp[4] =    {0, 0, 512, 512};
-    int raveFloorCubeVp[4] =   {0, 0, 512, 512};
-    int raveBackCubeVp[4] =    {0, 0, 512, 512};
-    int raveRightCubeVp[4] =   {0, 0, 512, 512};
-    int raveCeilingCubeVp[4] = {0, 0, 512, 512};
+    int gsoFrontCubeVp[4] =   {0, 0, 512, 512};
+    int gsoLeftCubeVp[4] =    {0, 0, 512, 512};
+    int gsoFloorCubeVp[4] =   {0, 0, 512, 512};
+    int gsoBackCubeVp[4] =    {0, 0, 512, 512};
+    int gsoRightCubeVp[4] =   {0, 0, 512, 512};
+    int gsoCeilingCubeVp[4] = {0, 0, 512, 512};
 
-    int raveFrontCubeOverlapVp[4] =   {0, 0, 768, 768};
-    int raveLeftCubeOverlapVp[4] =    {0, 0, 768, 768};
-    int raveFloorCubeOverlapVp[4] =   {0, 0, 768, 768};
-    int raveBackCubeOverlapVp[4] =    {0, 0, 768, 768};
-    int raveRightCubeOverlapVp[4] =   {0, 0, 768, 768};
-    int raveCeilingCubeOverlapVp[4] = {0, 0, 768, 768};
+    int gsoFrontCubeOverlapVp[4] =   {0, 0, 768, 768};
+    int gsoLeftCubeOverlapVp[4] =    {0, 0, 768, 768};
+    int gsoFloorCubeOverlapVp[4] =   {0, 0, 768, 768};
+    int gsoBackCubeOverlapVp[4] =    {0, 0, 768, 768};
+    int gsoRightCubeOverlapVp[4] =   {0, 0, 768, 768};
+    int gsoCeilingCubeOverlapVp[4] = {0, 0, 768, 768};
 
     // Actual physical dimensions of the screens (viewport).
     // In this case we're using inches.
-    double raveFrontSize[2] =   { 122.67, 92.0 };
-    double raveBackSize[2] =    { 122.67, 92.0 };
-    double raveLeftSize[2] =    { 122.67, 92.0 };
-    double raveRightSize[2] =   { 122.67, 92.0 };
-    double raveFloorSize[2] =   { 122.67, 92.0 };
-    double raveCeilingSize[2] = { 122.67, 92.0 };
+    double gsoFrontSize[2] =   { gso_screenInches_X, gso_screenInches_Y };
+    double gsoBackSize[2] =    { gso_screenInches_X, gso_screenInches_Y };
+    double gsoLeftSize[2] =    { gso_screenInches_X, gso_screenInches_Y };
+    double gsoRightSize[2] =   { gso_screenInches_X, gso_screenInches_Y };
+    double gsoFloorSize[2] =   { gso_screenInches_X, gso_screenInches_Y };
+    double gsoCeilingSize[2] = { gso_screenInches_X, gso_screenInches_Y };
 
     // Pseudo-physical dimensions of the cube displays. We think of 
-    // them as being 8 foot (96 inch) squares.
-    double raveFrontCubeSize[2] =   { 96.0, 96.0 };
-    double raveBackCubeSize[2] =    { 96.0, 96.0 };
-    double raveLeftCubeSize[2] =    { 96.0, 96.0 };
-    double raveRightCubeSize[2] =   { 96.0, 96.0 };
-    double raveFloorCubeSize[2] =   { 96.0, 96.0 };
-    double raveCeilingCubeSize[2] = { 96.0, 96.0 };
+    // them as being 8 foot (20 inch) squares.
+    double gsoFrontCubeSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoBackCubeSize[2] =    { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoLeftCubeSize[2] =    { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoRightCubeSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoFloorCubeSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoCeilingCubeSize[2] = { gso_screenInches_Y, gso_screenInches_Y };
 
-    double raveFrontCubeOverlapSize[2] =   { 96.0, 96.0 };
-    double raveBackCubeOverlapSize[2] =    { 96.0, 96.0 };
-    double raveLeftCubeOverlapSize[2] =    { 96.0, 96.0 };
-    double raveRightCubeOverlapSize[2] =   { 96.0, 96.0 };
-    double raveFloorCubeOverlapSize[2] =   { 96.0, 96.0 };
-    double raveCeilingCubeOverlapSize[2] = { 96.0, 96.0 };
+    double gsoFrontCubeOverlapSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoBackCubeOverlapSize[2] =    { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoLeftCubeOverlapSize[2] =    { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoRightCubeOverlapSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoFloorCubeOverlapSize[2] =   { gso_screenInches_Y, gso_screenInches_Y };
+    double gsoCeilingCubeOverlapSize[2] = { gso_screenInches_Y, gso_screenInches_Y };
 
 
-    // Physical length of one display unit (RAVE coord unit)
+    // Physical length of one display unit (GSO coord unit)
     // Same units should be used as for Size params.
     // In this case we're using inches.
-    double sizeOfOneRaveUnit = 48.0; 
+    double sizeOfOneGsoUnit = gso_OneUnitInches ;
 
-    // Current situation is that all screens have same pixel/rave unit.
-    double PixelPerRaveUnit[2];  // This will be calculated below
-    double *raveFrontPixelPerRaveUnit = PixelPerRaveUnit;
-    double *raveBackPixelPerRaveUnit = PixelPerRaveUnit;
-    double *raveLeftPixelPerRaveUnit = PixelPerRaveUnit;
-    double *raveRightPixelPerRaveUnit = PixelPerRaveUnit;
-    double *raveFloorPixelPerRaveUnit = PixelPerRaveUnit;
-    double *raveCeilingPixelPerRaveUnit = PixelPerRaveUnit;
-    double *powerwallPixelPerRaveUnit = PixelPerRaveUnit;
+    // Current situation is that all screens have same pixel/gso unit.
+    double PixelPerGsoUnit[2];  // This will be calculated below
+    double *gsoFrontPixelPerGsoUnit = PixelPerGsoUnit;
+    double *gsoBackPixelPerGsoUnit = PixelPerGsoUnit;
+    double *gsoLeftPixelPerGsoUnit = PixelPerGsoUnit;
+    double *gsoRightPixelPerGsoUnit = PixelPerGsoUnit;
+    double *gsoFloorPixelPerGsoUnit = PixelPerGsoUnit;
+    double *gsoCeilingPixelPerGsoUnit = PixelPerGsoUnit;
+    double *pwrwallPixelPerGsoUnit = PixelPerGsoUnit;
 
     // These offsets describe how the simulator (and cube) windows are 
     // positioned relative to one another on DISPLAY 0.0.
-    double raveFrontSimWinOffset[2] =   {1.0, 0.0};
-    double raveBackSimWinOffset[2] =    {1.1, 0.1};
-    double raveLeftSimWinOffset[2]  =   {0.0, 0.0};
-    double raveRightSimWinOffset[2]  =  {0.1, 0.1};
-    double raveFloorSimWinOffset[2] =   {0.0, 1.0};
-    double raveCeilingSimWinOffset[2] = {0.1, 1.1};
-    double powerwallSimWinOffset[2] =   {0.0, 0.0};
+    double gsoFrontSimWinOffset[2] =   {1.0, 0.0};
+    double gsoBackSimWinOffset[2] =    {1.1, 0.1};
+    double gsoLeftSimWinOffset[2]  =   {0.0, 0.0};
+    double gsoRightSimWinOffset[2]  =  {0.1, 0.1};
+    double gsoFloorSimWinOffset[2] =   {0.0, 1.0};
+    double gsoCeilingSimWinOffset[2] = {0.1, 1.1};
+    double pwrwallSimWinOffset[2] =   {0.0, 0.0};
 
 
     //
@@ -436,7 +516,7 @@ namespace CLASS_NAME
             //      right   perpendicular to X
             //      ceiling perpundicular to Z
             //
-            //      powerwall perpendicular to Y
+            //      pwrwall perpendicular to Y
 
             //      viewports:
             //          right edge of left    ==  left edge of front 
@@ -445,32 +525,32 @@ namespace CLASS_NAME
             //          left edge of right    ==  right edge of front
             //          top edge of left      ==  top edge of ceiling
 
-            osg::Quat raveFrontOrientation = iris::EulerToQuat(0.f, 0.f, 0.f);
-            osg::Quat raveLeftOrientation = iris::EulerToQuat(90.f, 0.f, 0.f);
-            osg::Quat raveFloorOrientation= iris::EulerToQuat(90.f, -90.f, 0.f);
+            osg::Quat gsoFrontOrientation = iris::EulerToQuat(0.f, 0.f, 0.f);
+            osg::Quat gsoLeftOrientation = iris::EulerToQuat(90.f, 0.f, 0.f);
+            osg::Quat gsoFloorOrientation= iris::EulerToQuat(90.f, -90.f, 0.f);
 
-            osg::Quat raveBackOrientation = iris::EulerToQuat(180.f, 0.f, 0.f);
-            osg::Quat raveRightOrientation = iris::EulerToQuat(-90.f, 0.f, 0.f);
-            osg::Quat raveCeilingOrientation=iris::EulerToQuat(90.f, 90.f, 0.f);
+            osg::Quat gsoBackOrientation = iris::EulerToQuat(180.f, 0.f, 0.f);
+            osg::Quat gsoRightOrientation = iris::EulerToQuat(-90.f, 0.f, 0.f);
+            osg::Quat gsoCeilingOrientation=iris::EulerToQuat(90.f, 90.f, 0.f);
 
-            osg::Quat powerwallOrientation= iris::EulerToQuat(0.f, 0.f, 0.f);
+            osg::Quat pwrwallOrientation= iris::EulerToQuat(0.f, 0.f, 0.f);
 
 
-            // Calculate the RAVE coords of the corner point at which the 
+            // Calculate the GSO coords of the corner point at which the 
             // three screen meet.
             //
             // ASSUMPTION: Corner where screens converge is one unit out
-            //             from RAVE origin in appropriate directions.
-            double frontLeftFloorCornerRaveCoords[3] = {-1.0, 1.0, -1.0};
+            //             from GSO origin in appropriate directions.
+            double frontLeftFloorCornerGsoCoords[3] = {-1.0, 1.0, -1.0};
 
 
-            // Calculate the number of pixels in a RAVE unit.
-            // ASSUMPTION: All screens have the same pixel per rave unit.
+            // Calculate the number of pixels in a GSO unit.
+            // ASSUMPTION: All screens have the same pixel per gso unit.
             //
             // Note that this calculation is being done with the parameters
             // for the screen for this compilation.
-            PixelPerRaveUnit[0] = VP[2] / (SCR_SIZE[0]/sizeOfOneRaveUnit);
-            PixelPerRaveUnit[1] = VP[3] / (SCR_SIZE[1]/sizeOfOneRaveUnit);
+            PixelPerGsoUnit[0] = VP[2] / (SCR_SIZE[0]/sizeOfOneGsoUnit);
+            PixelPerGsoUnit[1] = VP[3] / (SCR_SIZE[1]/sizeOfOneGsoUnit);
 
 
             //////
@@ -480,73 +560,73 @@ namespace CLASS_NAME
             // center that we need.
 
 
-            // Calculate the centers of each of the screens in RAVE coords.
+            // Calculate the centers of each of the screens in GSO coords.
             // ASSUMPTION: Corners converge as described above.
             //             Note that centers based on offsets from corner.
-            osg::Vec3 raveFrontCenter = 
+            osg::Vec3 gsoFrontCenter = 
               osg::Vec3 ( 
-                frontLeftFloorCornerRaveCoords[0] + 
-                                (raveFrontSize[0]/2.0)/sizeOfOneRaveUnit, 
-                frontLeftFloorCornerRaveCoords[1],
-                frontLeftFloorCornerRaveCoords[2] + 
-                                (raveFrontSize[1]/2.0)/sizeOfOneRaveUnit
+                frontLeftFloorCornerGsoCoords[0] + 
+                                (gsoFrontSize[0]/2.0)/sizeOfOneGsoUnit, 
+                frontLeftFloorCornerGsoCoords[1],
+                frontLeftFloorCornerGsoCoords[2] + 
+                                (gsoFrontSize[1]/2.0)/sizeOfOneGsoUnit
                 );
 
-            osg::Vec3 raveLeftCenter = 
+            osg::Vec3 gsoLeftCenter = 
               osg::Vec3 ( 
-                frontLeftFloorCornerRaveCoords[0],
-                frontLeftFloorCornerRaveCoords[1] -
-                                (raveLeftSize[0]/2.0)/sizeOfOneRaveUnit, 
-                frontLeftFloorCornerRaveCoords[2] + 
-                                (raveLeftSize[1]/2.0)/sizeOfOneRaveUnit
+                frontLeftFloorCornerGsoCoords[0],
+                frontLeftFloorCornerGsoCoords[1] -
+                                (gsoLeftSize[0]/2.0)/sizeOfOneGsoUnit, 
+                frontLeftFloorCornerGsoCoords[2] + 
+                                (gsoLeftSize[1]/2.0)/sizeOfOneGsoUnit
                 );
 
             // ASSUMPTION: X dir of floor matches X dir of left,
             //   that top edge of floor vp coincides with bottom edge of 
             //   left screen, and that righta edge of floor coincides
             //   with bottom edge of front screen.
-            osg::Vec3 raveFloorCenter = 
+            osg::Vec3 gsoFloorCenter = 
               osg::Vec3 ( 
-                frontLeftFloorCornerRaveCoords[0] +
-                                (raveFloorSize[1]/2.0)/sizeOfOneRaveUnit,
-                frontLeftFloorCornerRaveCoords[1] -
-                                (raveFloorSize[0]/2.0)/sizeOfOneRaveUnit, 
-                frontLeftFloorCornerRaveCoords[2]
+                frontLeftFloorCornerGsoCoords[0] +
+                                (gsoFloorSize[1]/2.0)/sizeOfOneGsoUnit,
+                frontLeftFloorCornerGsoCoords[1] -
+                                (gsoFloorSize[0]/2.0)/sizeOfOneGsoUnit, 
+                frontLeftFloorCornerGsoCoords[2]
                 );
 
 
 
-            osg::Vec3 raveBackCenter = 
+            osg::Vec3 gsoBackCenter = 
               osg::Vec3 ( 
-                         raveFrontCenter[0],
-                         -1*raveFrontCenter[1],
-                         raveFrontCenter[2]
+                         gsoFrontCenter[0],
+                         -1*gsoFrontCenter[1],
+                         gsoFrontCenter[2]
 
                 );
 
 
 
-            osg::Vec3 raveRightCenter = 
+            osg::Vec3 gsoRightCenter = 
               osg::Vec3 ( 
-                         -1*raveLeftCenter[0],
-                         raveLeftCenter[1],
-                         raveLeftCenter[2]
+                         -1*gsoLeftCenter[0],
+                         gsoLeftCenter[1],
+                         gsoLeftCenter[2]
 
                 );
 
 
-            osg::Vec3 raveCeilingCenter = 
+            osg::Vec3 gsoCeilingCenter = 
               osg::Vec3 ( 
-                         raveFloorCenter[0],
-                         raveFloorCenter[1],
-                         -1*raveFloorCenter[2]
+                         gsoFloorCenter[0],
+                         gsoFloorCenter[1],
+                         -1*gsoFloorCenter[2]
 
                 );
 
             // The following enforces consitency between the 
             //   Gaithersburg and Boulder installations. 
-            //   Makes the powerwall like the RAVE front wall.
-            osg::Vec3 powerwallCenter = raveFrontCenter;
+            //   Makes the pwrwall like the GSO front wall.
+            osg::Vec3 pwrwallCenter = gsoFrontCenter;
 
 
             // For the cube DSOs, we don't really have to calculate the 
@@ -554,19 +634,19 @@ namespace CLASS_NAME
             //
             // ASSUMPTION:  The Cube DSOs represent "screens" that are the 
             // faces of an axis-aligned cube that is centered at the origin.
-            osg::Vec3 raveFrontCubeCenter   = osg::Vec3 ( 0.0,  1.0,  0.0);
-            osg::Vec3 raveBackCubeCenter    = osg::Vec3 ( 0.0, -1.0,  0.0);
-            osg::Vec3 raveLeftCubeCenter    = osg::Vec3 (-1.0,  0.0,  0.0);
-            osg::Vec3 raveRightCubeCenter   = osg::Vec3 ( 1.0,  0.0,  0.0);
-            osg::Vec3 raveFloorCubeCenter   = osg::Vec3 ( 0.0,  0.0, -1.0);
-            osg::Vec3 raveCeilingCubeCenter = osg::Vec3 ( 0.0,  0.0,  1.0);
+            osg::Vec3 gsoFrontCubeCenter   = osg::Vec3 ( 0.0,  1.0,  0.0);
+            osg::Vec3 gsoBackCubeCenter    = osg::Vec3 ( 0.0, -1.0,  0.0);
+            osg::Vec3 gsoLeftCubeCenter    = osg::Vec3 (-1.0,  0.0,  0.0);
+            osg::Vec3 gsoRightCubeCenter   = osg::Vec3 ( 1.0,  0.0,  0.0);
+            osg::Vec3 gsoFloorCubeCenter   = osg::Vec3 ( 0.0,  0.0, -1.0);
+            osg::Vec3 gsoCeilingCubeCenter = osg::Vec3 ( 0.0,  0.0,  1.0);
 
-            osg::Vec3 raveFrontCubeOverlapCenter   = osg::Vec3 ( 0.0,  1.0,  0.0);
-            osg::Vec3 raveBackCubeOverlapCenter    = osg::Vec3 ( 0.0, -1.0,  0.0);
-            osg::Vec3 raveLeftCubeOverlapCenter    = osg::Vec3 (-1.0,  0.0,  0.0);
-            osg::Vec3 raveRightCubeOverlapCenter   = osg::Vec3 ( 1.0,  0.0,  0.0);
-            osg::Vec3 raveFloorCubeOverlapCenter   = osg::Vec3 ( 0.0,  0.0, -1.0);
-            osg::Vec3 raveCeilingCubeOverlapCenter = osg::Vec3 ( 0.0,  0.0,  1.0);
+            osg::Vec3 gsoFrontCubeOverlapCenter   = osg::Vec3 ( 0.0,  1.0,  0.0);
+            osg::Vec3 gsoBackCubeOverlapCenter    = osg::Vec3 ( 0.0, -1.0,  0.0);
+            osg::Vec3 gsoLeftCubeOverlapCenter    = osg::Vec3 (-1.0,  0.0,  0.0);
+            osg::Vec3 gsoRightCubeOverlapCenter   = osg::Vec3 ( 1.0,  0.0,  0.0);
+            osg::Vec3 gsoFloorCubeOverlapCenter   = osg::Vec3 ( 0.0,  0.0, -1.0);
+            osg::Vec3 gsoCeilingCubeOverlapCenter = osg::Vec3 ( 0.0,  0.0,  1.0);
 
 
 
@@ -687,7 +767,7 @@ namespace CLASS_NAME
 
 
             // Set screen X and Y locations for window? Origin at upper left.
-            // ASSUMPTION: RAVE window covers entire screen and all screens are
+            // ASSUMPTION: GSO window covers entire screen and all screens are
             //             the same size.
             traits->x = pixOffset[0];
             traits->y = pixOffset[1];
@@ -695,8 +775,8 @@ namespace CLASS_NAME
             traits->width  = VP[2] * pixScale + 0.5;
             traits->height = VP[3] * pixScale + 0.5;
 
-            osg::Vec2 vpExtent = osg::Vec2 ( VP[2]/PIX_PER_RAVE[0], 
-                                             VP[3]/PIX_PER_RAVE[1] ) ;
+            osg::Vec2 vpExtent = osg::Vec2 ( VP[2]/PIX_PER_GSO[0], 
+                                             VP[3]/PIX_PER_GSO[1] ) ;
 
 #ifdef OVERLAP
             // If we want overapped field of view between adjacent screens, 
@@ -715,9 +795,9 @@ namespace CLASS_NAME
             pane->setViewport (VP[0], VP[1], VP[2], VP[3]);
 
 
-            // Place the screens in the rave coordinate system.
+            // Place the screens in the gso coordinate system.
 
-            // ASSUMPTION: Pixel per rave unit is constant in all directions
+            // ASSUMPTION: Pixel per gso unit is constant in all directions
             //             and on all screens.
             pane->setExtent ( vpExtent );
 

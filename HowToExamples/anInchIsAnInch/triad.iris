@@ -1,0 +1,11 @@
+# 1/19 = .055555555555555
+DCS world_inches 0  0  0 0 0   .055555555555555
+ADDCHILD world_inches world
+
+
+LOAD triad triad.savg
+
+DCS position_triad 0 18 0      #inches
+ADDCHILD position_triad world_inches
+
+ADDCHILD triad position_triad

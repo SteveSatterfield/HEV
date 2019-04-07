@@ -1,3 +1,0 @@
-wait echo __________ powerwallDisplay.iris started __________
-dso powerwallWindow
-wait echo __________ powerwallDisplay.iris finished __________

@@ -1,4 +1,0 @@
-BUTTON HIDE
-  ON WAIT irisfly-hideWindows
-  OFF WAIT irisfly-showWindows
-

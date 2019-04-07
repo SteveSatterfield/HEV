@@ -1,4 +1,3 @@
-
 #include <dtk.h>
 #include <dtk/dtkDSO_loader.h>
 
@@ -13,22 +12,31 @@ namespace powerwallWindow
     class powerwallWindow : public iris::Augment
     {
     public:
+#ifndef SIM
 	powerwallWindow():iris::Augment("powerwallWindow") 
+#else
+	powerwallWindow():iris::Augment("powerwallSimWindow") 
+#endif
 	{
 	
 	    setDescription("%s- PowerWall",getName()) ;
 
-	    int width = 6*1920;
-	    int height = 4*1080. ;
+	    int width = 1280 ;
+	    int height = 1024 ;
 	    int x = 0 ;
 	    int y = 0 ;
 	    int sn = 1 ;
 	    //int sn = 0 ;
-	    //float aspect = (float)width/(float)height ;
-	    float aspect = (float)height/(float)width ;
-	    //float dpf_inches=18.;
+	    float aspect = (float)width/(float)height ;
 	    //float zoffset = 2.f/dpf_inches ;
 	    float zoffset = 0.f ;
+#ifdef SIM
+	    int scale = 2 ;
+	    width /= scale ;
+	    height /= scale ; 
+	    zoffset /= scale ; 
+#endif
+	    // sgs 10/1/12 osg::ref_ptr<iris::Window> window = new iris::Window("PowerWall") ;
 	    osg::ref_ptr<iris::Window> window = new iris::Window("Front") ;
 
 	    osg::GraphicsContext::Traits* const traits = window->getTraits() ;
@@ -39,13 +47,16 @@ namespace powerwallWindow
 	    traits->y = y ;
 	    traits->width = width ;
 	    traits->height = height ;
-
+#ifdef SIM
 	    // use whatever DISPLAY is set to
 	    traits->readDISPLAY() ;
 
+	    traits->windowDecoration = true;
+	    window->setStereo(false) ;
+#else
 	    traits->windowDecoration = false;
 	    window->setStereo(true) ;
-
+#endif
 	    traits->doubleBuffer = true;
 	    
 	    osg::ref_ptr<iris::ImmersivePane> pane = new iris::ImmersivePane(window.get()) ;

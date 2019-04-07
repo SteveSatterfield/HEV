@@ -113,6 +113,10 @@ namespace desktopWindow
 	    osg::GraphicsContext::Traits* const traits = _window->getTraits() ;
 	    traits->x = 320 ;
 	    traits->y = 320 ;
+	    traits->x = 1920 ;
+	    traits->y = 360 ;
+	    traits->width = 720 ;
+	    traits->height = 720 ;
 	    traits->width = 720 ;
 	    traits->height = 720 ;
 	    traits->windowDecoration = true;

@@ -1,0 +1,4 @@
+export HEV_DISPLAY_TYPE=ARC6
+export HEV_identifyImmersive_OUTPUT=arc6
+export HEV_testImmersive_OUTPUT=IMMERSIVE
+export HEV_NewWorkSpace=yes
