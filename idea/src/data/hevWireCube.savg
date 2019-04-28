@@ -1,0 +1,42 @@
+# StarthevWireCube.savg 
+# Wire (lines) cube -1 to +1
+# 0->1 axis: +x red, +y green, +z blue
+# top yellow
+# bottom cyan
+# front vertical white
+# back vertical magenta
+# 4/28/2019 sgs
+lines
+0 0 0   1 0 0 1
+1 0 0   1 0 0 1
+lines
+0 0 0   0 1 0 1
+0 1 0   0 1 0 1
+lines
+0 0 0   0 0 1 1
+0 0 1   0 0 1 1
+lines
+-1 -1 -1  0 1 1 1
+ 1 -1 -1  0 1 1 1
+ 1  1 -1  0 1 1 1
+-1  1 -1  0 1 1 1
+-1 -1 -1  0 1 1 1
+lines
+-1 -1  1  1 1 0 1
+ 1 -1  1  1 1 0 1
+ 1  1  1  1 1 0 1
+-1  1  1  1 1 0 1
+-1 -1  1  1 1 0 1
+lines
+-1 -1  1  1 1 1 1
+-1 -1 -1  1 1 1 1
+lines
+ 1 -1  1  1 1 1 1
+ 1 -1 -1  1 1 1 1
+lines
+-1  1  1  1 0 1 1
+-1  1 -1  1 0 1 1
+lines
+ 1  1  1  1 0 1 1
+ 1  1 -1  1 0 1 1
+# End: hevWireCube.savg 

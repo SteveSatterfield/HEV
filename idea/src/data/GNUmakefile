@@ -40,7 +40,7 @@ unlit.osg unlitWire.osg wire.osg \
 holodeck.iris holodeck_black.iris holodeck.osgt holodeck_black.osgt \
 guestPointer.iris  guestPointerGlyph.osg \
 pivotHead.iris pivotWand.iris \
-teapot.osg pointerTrigger.sh echoON.iris echoOFF.iris
+teapot.osg pointerTrigger.sh echoON.iris echoOFF.iris hevWireCube.savg
 
 #holodeck_edges.savg holodeck.iris holodeck.savg
 
